@@ -1,4 +1,4 @@
-# 				Just Covers Plugin
+# 				Just Covers Squeezebox Server Plugin
 #
 #    Copyright (c) 2011 Tom Kalmijn (tkalmijn@yahoo.com)
 #
@@ -26,7 +26,6 @@ use URI::Escape qw(uri_escape_utf8);
 use HTML::Entities qw(encode_entities);
 use Slim::Utils::Strings qw(string);
 use Slim::Utils::Prefs;
-use Slim::Utils::OSDetect;
 
 my $serverPrefs = preferences('server');
 
