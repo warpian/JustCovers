@@ -1,0 +1,34 @@
+
+
+.jcCell {
+    padding:20px;
+    float:left;
+}
+
+.jcItem {
+    position:relative;
+    background-color: #f0f0f0;
+    width:100%;
+    height:100%;
+    border-style:solid;
+    border-width:4px;
+    border-color:#343434;
+}
+
+.jcItem a {
+    text-decoration:none;
+}
+
+.jcImage {
+    position:absolute;
+    opacity:0.2;
+    filter:alpha(opacity=20); // msie
+}
+
+.jcText {
+    position:absolute;
+    top:40%;
+    left:0px;
+    width:100%;
+    color:#343434;
+}

@@ -1,0 +1,36 @@
+[%- IF !ajaxUpdate %]
+[%- pagetitle = 'PLUGIN_JUSTCOVERS' | string -%]
+
+[%- extJsScripts = BLOCK -%]
+	<script type="text/javascript">
+		[% PROCESS jsString id='SWITCH_TO_LIST' jsId='switch_to_list' %]
+		[% PROCESS jsString id='SWITCH_TO_EXTENDED_LIST' jsId='switch_to_extended_list' %]
+		[% PROCESS jsString id='SWITCH_TO_GALLERY' jsId='switch_to_gallery' %]
+		[% PROCESS jsString id='SORT_BY' jsId='sort_by' %]
+		[% PROCESS jsString id='ALBUM_DISPLAY_OPTIONS' jsId='display_options' %]
+
+		Ext.onReady(function(){
+			Browse.init();
+		});
+ 	</script>
+   <link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css" />
+[%- END -%]
+
+[% PROCESS pageheader.html; dontscroll=1 useSpecialExt="-browse" %]
+[% END %]
+
+[%- FOREACH genre = genres %]
+    <div class="jcCell" style="width:[% size %]px;height:[% size %]px">
+       <div class="jcItem">
+          <a href="[% webroot %]plugins/JustCovers/albums.html?genre=[% genre.id %]&player=[% playerURI %]">
+             <img class="jcImage" src="[% webroot %]music/[% genre.coverid %]/cover_[% size %]x[% size %]_o.jpg" style="width:[% size %]px;height:[% size %]px"/>
+             <div class="jcText" style="font-size:[% size / 6 %]px"><center>[% genre.name %]</center></div>
+          </a>
+       </div>
+    </div>
+[%- END %]   
+
+[%- IF !ajaxUpdate %]
+[% PROCESS pagefooter.html %]
+[% END %]
+

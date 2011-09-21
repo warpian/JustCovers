@@ -1,0 +1,2 @@
+PLUGIN_JUSTCOVERS
+	EN	Just Covers

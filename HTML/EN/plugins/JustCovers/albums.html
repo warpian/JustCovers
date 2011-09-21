@@ -1,0 +1,38 @@
+[%- IF !ajaxUpdate %]
+[%- pagetitle = 'PLUGIN_JUSTCOVERS' | string -%]
+
+[%- extJsScripts = BLOCK -%]
+	<script type="text/javascript">
+		[% PROCESS jsString id='SWITCH_TO_LIST' jsId='switch_to_list' %]
+		[% PROCESS jsString id='SWITCH_TO_EXTENDED_LIST' jsId='switch_to_extended_list' %]
+		[% PROCESS jsString id='SWITCH_TO_GALLERY' jsId='switch_to_gallery' %]
+		[% PROCESS jsString id='SORT_BY' jsId='sort_by' %]
+		[% PROCESS jsString id='ALBUM_DISPLAY_OPTIONS' jsId='display_options' %]
+
+		Ext.onReady(function(){
+			Browse.init();
+		});
+ 	</script>
+   <link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css" />
+[%- END -%]
+
+[% PROCESS pageheader.html %]
+[% END %]
+
+[%- FOREACH album = albums %]
+<div class="jcCell" style="width:[% size %]px;height:[% size %]px">
+    <a  href="javascript:void()" onclick="javascript:SqueezeJS.Controller.urlRequest('/anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:[% album.id %]&player=[% playerURI %]', 1, SqueezeJS.string('connecting_for'));this.blur(); return true;">
+      <img 
+         src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg" 
+         width="[% size %]px" height="[% size %]px"
+         alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
+         title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"/>
+    </a>
+</div>
+[%- END %]
+
+
+[%- IF !ajaxUpdate %]
+[% PROCESS pagefooter.html %]
+[% END %]
+
