@@ -97,7 +97,7 @@ sub showAlbums {
 		'href'  => 'href=genres.html?player=' . uri_escape_utf8($params->{'player'}),
     };
     push @{$params->{'pwd_list'}}, {
-		'title' => encode_entities($genreName),
+		'title' => $genreName,
 		'href'  => 'href=albums.html?genre=' . $genreId . '&player=' .  uri_escape_utf8($params->{'player'}),
     };    
     # feed above params to template
@@ -133,7 +133,7 @@ EOT
 
     # fetch row by row to preserve order and do some decoding
     while (my $genre = $sth->fetchrow_hashref()) {
-        utf8::decode($genre->{'name'}) if exists $genre->{'name'} ;
+        utf8::decode($genre->{'name'});
         %genres->{$genre->{'id'}} = $genre;
     }    
     $sth->finish;
@@ -179,8 +179,8 @@ EOT
 
     # fetch row by row to preserve ORDER BY and do some decoding
     while (my $album = $sth->fetchrow_hashref()) {
-        utf8::decode($album->{'title'}) if exists $album->{'title'} ;
-        utf8::decode($album->{'artist'}) if exists $album->{'artist'};
+        utf8::decode($album->{'title'});
+        utf8::decode($album->{'artist'});
         push @albums, $album;
     }    
     $sth->finish;
