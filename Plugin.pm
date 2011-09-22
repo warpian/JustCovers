@@ -134,6 +134,7 @@ EOT
     # fetch row by row to preserve order and do some decoding
     while (my $genre = $sth->fetchrow_hashref()) {
         utf8::decode($genre->{'name'});
+        if (!defined $genre->{'coverid'}) { $genre->{'coverid'} = 0; } 
         %genres->{$genre->{'id'}} = $genre;
     }    
     $sth->finish;
@@ -181,6 +182,7 @@ EOT
     while (my $album = $sth->fetchrow_hashref()) {
         utf8::decode($album->{'title'});
         utf8::decode($album->{'artist'});
+        if (!defined $album->{'coverid'}) { $album->{'coverid'} = 0; }
         push @albums, $album;
     }    
     $sth->finish;

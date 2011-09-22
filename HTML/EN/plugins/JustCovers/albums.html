@@ -27,6 +27,9 @@
          width="[% size %]px" height="[% size %]px"
          alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
          title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"/>
+        [%- IF album.coverid == 0 %]
+        <div><center>[% album.title %][%- IF album.year %] ([% album.year %])[% END %]<br/>[% album.artist %]</center></div>
+        [% END -%]
     </a>
 </div>
 [%- END %]
