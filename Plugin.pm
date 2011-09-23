@@ -91,12 +91,12 @@ sub showAlbums {
 
     # get paging info from setting and query parameter
     my $itemsPerPage = max($params->{'itemsPerPage'} || $serverPrefs->get('itemsPerPage') || 100, 1);
-    my $offset = max($params->{'start'} + 1 || 1, 1);
+    my $start = max($params->{'start'} || 0, 0);
 
-    my $result = getAlbumsByGenre($genreId, $itemsPerPage, $offset);
+    my $result = getAlbumsByGenre($genreId, $itemsPerPage, $start);
     my $totalAlbums = $result->{'total'};
 
-    if ($offset <= $totalAlbums) {
+    if ($start < $totalAlbums) {
         push @{$params->{'albums'}}, @{$result->{'albums'}};
     }
 
@@ -104,9 +104,8 @@ sub showAlbums {
     $params->{'pageinfo'} = Slim::Web::Pages::Common->pageInfo({
 
 			'itemCount'    => $totalAlbums,
-			'path'         => $params->{'path'},
 			'otherParams'  => "&genre=$genreId&itemsPerPage=$itemsPerPage&player=" . uri_escape_utf8($params->{'player'}),
-			'start'        => $offset - 1,
+			'start'        => $start,
 			'perPage'      => $itemsPerPage,
 		});
 
@@ -171,7 +170,7 @@ EOT
 sub getAlbumsByGenre {
     my $genreId = shift;    
     my $itemsPerPage = shift;
-    my $offset = shift;
+    my $start = shift;
 
 # Note on not using LIMIT:
 # Unfortunately SQLite has no SQL_CALC_FOUND_ROWS like MySQL does.
@@ -209,15 +208,21 @@ EOT
 
     my $albums = ();
     my $count = 0;
-    while (my $album = $sth->fetchrow_hashref()) {
-        
-        if ((++$count >= $offset) && ($count < ($offset + $itemsPerPage))) { # mimics LIMIT, offset is one based
+    while (1) {
+        if (($count >= $start) && ($count < ($start + $itemsPerPage))) { # mimics LIMIT
+            my $album = $sth->fetchrow_hashref();
+            last if !defined $album;
 
             utf8::decode($album->{'title'}) if defined $album->{'title'};
             utf8::decode($album->{'artist'}) if defined $album->{'artist'};
             $album->{'coverid'} = 0 if !defined $album->{'coverid'}; 
             push @{$albums}, $album;
+        } else {
+            last if !defined $sth->fetchrow_arrayref();
+            # Since fetchrow_arrayref() is faster than fetchrow_hashref()
+            # we call it when we are not going to use the data anyway.
         }
+        $count++;
     }
     my $result = {
         'total' => $count,
