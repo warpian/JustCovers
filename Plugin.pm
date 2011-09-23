@@ -91,8 +91,7 @@ sub showAlbums {
 
     # get paging info from setting and query parameter
     my $itemsPerPage = max($params->{'itemsPerPage'} || $serverPrefs->get('itemsPerPage') || 100, 1);
-    $params->{'itemsPerPage'} = $itemsPerPage; 
-    my $offset = max($params->{'offset'} || 1, 1);
+    my $offset = max($params->{'start'} + 1 || 1, 1);
 
     my $result = getAlbumsByGenre($genreId, $itemsPerPage, $offset);
     my $totalAlbums = $result->{'total'};
@@ -102,16 +101,14 @@ sub showAlbums {
     }
 
     # create paging info
-    my $pages = ();
-    my $numPages = ceil($totalAlbums / $itemsPerPage) || 1;
-    for (my $i = 1; $i <= $numPages; $i++) {
-        push @{$pages}, {
-            'number' => $i,
-            'offset' => (($i - 1) * $itemsPerPage) + 1,
-        }
-    }
-    push @{$params->{'pages'}}, @{$pages};
-    $params->{'currentPage'} = ceil($offset / $itemsPerPage);
+    $params->{'pageinfo'} = Slim::Web::Pages::Common->pageInfo({
+
+			'itemCount'    => $totalAlbums,
+			'path'         => $params->{'path'},
+			'otherParams'  => "&genre=$genreId&itemsPerPage=$itemsPerPage&player=" . uri_escape_utf8($params->{'player'}),
+			'start'        => $offset - 1,
+			'perPage'      => $itemsPerPage,
+		});
 
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;

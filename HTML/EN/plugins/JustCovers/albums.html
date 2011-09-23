@@ -5,37 +5,10 @@
 <link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css" />
 [%- END %]
 
-[%- IF pages.size > 1 -%]
+[% IF hasPagebar -%]
 [% pageHeaderInfo = BLOCK -%]
-<div id="pagebar" class="pagebar">
-
-[%- FOREACH page = pages -%]
-    [%- IF page.number == currentPage - 1 %][% prevPage = page %][% END %]
-    [%- IF page.number == currentPage + 1 %][% nextPage = page %][% END %]
-[% END %]
-
-[%- IF currentPage != 1 %]
-    <a class="btn" href="albums.html?genre=[% genre %]&offset=[% prevPage.offset %]&itemsPerPage=[% itemsPerPage %]player=[% playerURI %]">
-        <img width="13" height="13" align="top" title="[% "PREVIOUS" | string %]" alt="[% "PREVIOUS" | string %]" src="[% webroot %]html/images/b_previous.gif" />
-    </a>
-[% END %]
-
-[%- FOREACH page = pages -%]
-    [%- IF page.number == currentPage -%]
-        <span>&nbsp;[% page.number %]</span>
-    [% ELSE -%]
-        <a class="btn" href="albums.html?genre=[% genre %]&offset=[% page.offset %]&itemsPerPage=[% itemsPerPage %]player=[% playerURI %]">&nbsp;[% page.number %]</a><wbr/>
-    [%- END %]
-[%- END %]
-
-[%- IF currentPage != pages.size %]
-    <a class="btn" href="albums.html?genre=[% genre %]&offset=[% nextPage.offset %]&itemsPerPage=[% itemsPerPage %]player=[% playerURI %]">
-        <img width="13" height="13" align="top" title="[% "NEXT" | string %]" alt="[% "NEXT" | string %]" src="[% webroot %]html/images/b_next.gif">
-    </a>
-[%- END -%]
-
-</div>
-[% END %]
+    [% PROCESS pagebar -%]
+[% END -%]
 [% END -%]
         
 [% PROCESS pageheader.html %]
@@ -49,9 +22,7 @@
          width="[% size %]px" height="[% size %]px"
          alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
          title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"/>
-        [%- IF album.coverid == 0 %]
-        <div><center>[% album.title %][%- IF album.year %] ([% album.year %])[% END %]<br/>[% album.artist %]</center></div>
-        [% END -%]
+        [% IF album.coverid == 0 %]<div><center>[% album.title %][%- IF album.year %] ([% album.year %])[% END %]<br/>[% album.artist %]</center></div>[% END %]
     </a>
 </div>
 [%- END %]
