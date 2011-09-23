@@ -27,6 +27,10 @@
 </div>
 [%- END %]
 
+[%- infoTab = BLOCK -%]
+<div>[% "ALBUMS" | string %] [% pageinfo.startitem + 1 %] [% "TO" | string %] [% pageinfo.enditem + 1 %] [% "OF" | string %] [% pageinfo.totalitems %]</div>
+[%- END -%]
+
 [%- IF !ajaxUpdate %]
 [% PROCESS pagefooter.html %]
 [% END %]
