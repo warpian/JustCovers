@@ -1,2 +1,17 @@
 PLUGIN_JUSTCOVERS
 	EN	Just Covers
+
+PLUGIN_JUSTCOVERS_DESC
+	EN	Browse by genres and albums with covers only.
+
+SETUP_SHOW_ALBUM_TITLE
+	EN	Show Title with Albums
+
+SETUP_SHOW_ALBUM_TITLE_DESC
+	EN	You may choose to show the album title when browsing with Just Covers. When enabled, the album title will be shown below the album art.
+
+SETUP_SHOW_SHADOWS
+	EN	Show Shadows with Albums.
+
+SETUP_SHOW_SHADOWS_DESC
+	EN	Show Shadows with Albums DESC?

@@ -1,0 +1,15 @@
+[% PROCESS settings/header.html %]
+
+[% WRAPPER setting title="SETUP_SHOW_ALBUM_TITLE" desc="SETUP_SHOW_ALBUM_TITLE_DESC" -%]
+
+<input type="checkbox" name="pref_showAlbumTitle" [% IF !prefs.pref_showAlbumTitle || prefs.pref_showAlbumTitle == 'on' %]checked="checked" [% END %]>
+
+[%- END %]
+
+[% WRAPPER setting title="SETUP_SHOW_SHADOWS" desc="SETUP_SHOW_SHADOWS_DESC" -%]
+
+<input type="checkbox" name="pref_showShadows" [% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
+
+[%- END %]
+
+[% PROCESS settings/footer.html %]

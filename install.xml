@@ -3,18 +3,19 @@
   <name>PLUGIN_JUSTCOVERS</name>
   <creator>Tom Kalmijn</creator>
   <defaultState>enabled</defaultState>
-  <description>Browse by genres and albums with covers only.</description>
+  <description>PLUGIN_JUSTCOVERS_DESC</description>
   <email>tkalmijn@yahoo.com</email>
   <homepageURL>http://www.warpgear.nl/sb/justcovers</homepageURL>
+  <optionsURL>plugins/JustCovers/settings/basic.html</optionsURL>
   <icon>plugins/JustCovers/html/images/justcovers.png</icon>
   <id>R0A76761-4413-4494-A559-E688DCFC674C</id>
   <module>Plugins::JustCovers::Plugin</module>
   <targetApplication>
     <id>SqueezeCenter</id>
+    <minVersion>7.6.0</minVersion>
     <maxVersion>*</maxVersion>
-    <minVersion>7.6.1</minVersion>
   </targetApplication>
-  <type>2</type>
+  <type>2</type><!-- type=extension -->
   <version>0.1</version>
 </extension>
 

@@ -26,17 +26,20 @@ use URI::Escape qw(uri_escape_utf8);
 use HTML::Entities qw(encode_entities);
 use Slim::Utils::Strings qw(string);
 use Slim::Utils::Prefs;
+use Slim::Utils::Log;
 use List::Util qw(max);
 use POSIX qw(ceil);
+use Plugins::JustCovers::Settings;
 
+my $log = Slim::Utils::Log->addLogCategory( {
+	category     => 'plugin.justcovers',
+	defaultLevel => 'DEBUG',
+	description  => 'PLUGIN_JUSTCOVERS',
+} );
+
+my $prefs = preferences('plugin.justcovers');
 my $serverPrefs = preferences('server');
 my $collate = Slim::Utils::OSDetect->getOS()->sqlHelperClass()->collate();
-
-my $log = Slim::Utils::Log->addLogCategory({
-	'category'     => 'plugin.coversonly',
-	'defaultLevel' => 'DEBUG',
-	'description'  => 'PLUGIN_COVERSONLY',
-});
 
 my $allGenres; # cached genre info (id => genre) for use by albums.html
 
@@ -48,8 +51,13 @@ sub getDisplayName { return string('PLUGIN_JUSTCOVERS'); }
 
 sub initPlugin { 
     my $client = shift;
+    
     $client->SUPER::initPlugin(@_);
-    $allGenres = getGenres(); 
+    
+    if (main::WEBUI) {
+        $allGenres = getGenres();
+        Plugins::JustCovers::Settings->new;
+    }
 }
 
 # Prepares variables and processes the "genres.html" template.
@@ -108,6 +116,9 @@ sub showAlbums {
 			'start'        => $start,
 			'perPage'      => $itemsPerPage,
 		});
+
+    $params->{'showAlbumTitle'} = !defined $prefs->get('showAlbumTitle') || $prefs->get('showAlbumTitle') eq 'on';
+    $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
 
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;

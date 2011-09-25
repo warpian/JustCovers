@@ -17,12 +17,15 @@
 [%- FOREACH album = albums %]
 <div class="jcCell" style="width:[% size %]px;height:[% size %]px">
     <a  href="javascript:void()" onclick="javascript:SqueezeJS.Controller.urlRequest('/anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:[% album.id %]&player=[% playerURI %]', 1, SqueezeJS.string('connecting_for'));this.blur(); return true;">
-      <img 
-         src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg" 
+
+        <img[% IF showShadows %] class="shadow" [% END %]
+         src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg"
          width="[% size %]px" height="[% size %]px"
          alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
          title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"/>
-        [% IF album.coverid == 0 %]<div><center>[% album.title %][%- IF album.year %] ([% album.year %])[% END %]<br/>[% album.artist %]</center></div>[% END %]
+       
+        [% IF showAlbumTitle || album.coverid == 0 %]<div><center>[% album.title %][%- IF album.year %] ([% album.year %])[% END %]<br/>[% album.artist %]</center></div>[% END %]
+
     </a>
 </div>
 [%- END %]
