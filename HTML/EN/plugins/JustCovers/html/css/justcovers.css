@@ -5,7 +5,7 @@
     float:left;
 }
 
-.jcItem {
+.jcGenre {
     position:relative;
     background-color: #f0f0f0;
     width:100%;
@@ -13,6 +13,19 @@
     border-style:solid;
     border-width:4px;
     border-color:#343434;
+}
+
+.jcAlbum {
+}
+
+.jcAlbum div {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ff0000;
+}
+
+.jcAlbum a {
+    text-decoration:none;    
 }
 
 .jcItem a {

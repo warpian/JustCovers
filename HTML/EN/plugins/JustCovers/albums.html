@@ -3,6 +3,51 @@
 
 [%- extJsScripts = BLOCK -%]
 <link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css" />
+                                                  
+<script type="text/javascript">
+    [% PROCESS jsString id='SORT_BY' jsId='sort_by' %]
+    [% PROCESS jsString id='ALBUM_DISPLAY_OPTIONS' jsId='display_options' %]
+
+    var orderByList;
+    orderByList = {
+       '[% "ALBUM" | string %]'                : 'album.titlesort',
+       '[% "SORT_YEARALBUM" | string %]'       : 'album.year,album.titlesort',
+       '[% "SORT_YEARARTISTALBUM" | string %]' : 'album.year,contributor.namesort,album.titlesort',
+       '[% "SORT_ARTISTALBUM" | string %]'     : 'contributor.namesort,album.titlesort',
+       '[% "SORT_ARTISTYEARALBUM" | string %]' : 'contributor.namesort,album.year,album.titlesort',
+       '[% "SORT_GENREALBUM" | string %]'      : 'genre.namesort,album.titlesort',
+       '[% "SORT_GENREARTISTALBUM" | string %]': 'genre.namesort,contributor.namesort,album.titlesort'
+    }
+
+    Ext.onReady(function() {
+		if (Ext.get('viewSelect')) {
+			var menu = new Ext.menu.Menu();
+
+			var sortOrder = SqueezeJS.getCookie('Squeezebox-orderBy');
+//            alert('sortOrder:' + sortOrder);
+			for (order in orderByList) {
+				menu.add(new Ext.menu.CheckItem({
+					text: order,
+					handler: function(ev){
+						this.chooseAlbumOrderBy(orderByList[ev.text]);
+					},
+					scope: this,
+					checked: (orderByList[order] == sortOrder),
+					group: 'sortOrder'
+				}));
+			}
+
+			new SqueezeJS.UI.SplitButton({
+				renderTo: 'viewSelect',
+				cls: 'x-btn-text',
+                text: 'hallo',
+				menu: menu,
+				arrowTooltip: SqueezeJS.string('display_options')
+			});
+        }});
+
+ </script>
+
 [%- END %]
 
 [% IF hasPagebar -%]
@@ -14,21 +59,39 @@
 [% PROCESS pageheader.html %]
 [% END %]
 
+[%# detected user-agents in 'browserType' -> 'Firefox' 'Opera' 'Safari' 'IE7' 'IE' %]
+
 [%- FOREACH album = albums %]
 <div class="jcCell" style="width:[% size %]px;height:[% size %]px">
-    <a  href="javascript:void()" onclick="javascript:SqueezeJS.Controller.urlRequest('/anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:[% album.id %]&player=[% playerURI %]', 1, SqueezeJS.string('connecting_for'));this.blur(); return true;">
+    <div class="thumbWrap">
+        <div class="thumbArtwork">
+        <a href="javascript:void()" onclick="javascript:SqueezeJS.Controller.urlRequest('/anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:[% album.id %]&player=[% playerURI %]', 1, SqueezeJS.string('connecting_for'));this.blur(); return true;">
 
-        <img[% IF showShadows %] class="shadow" [% END %]
+        <img [% IF browserType == 'Firefox' && showShadows %]class="shadow" [% END -%]
          src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg"
          width="[% size %]px" height="[% size %]px"
          alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
          title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"/>
-       
-        [% IF showAlbumTitle || album.coverid == 0 %]<div><center>[% album.title %][%- IF album.year %] ([% album.year %])[% END %]<br/>[% album.artist %]</center></div>[% END %]
-
-    </a>
+        <a/>
+        </div>
+        
+        [% IF showTitle || showArtist || showYear || album.coverid == 0 %]
+        <div class="artworkText" style="width:[% size %]px;">
+        <span width="[% size %]px">
+            [% IF showTitle || album.coverid == 0 %][% album.title %] [% END %]
+            [% IF showYear && album.year %]([% album.year %])[% END %]
+            [% IF showArtist %][% IF showTitle || showYear %]<br/>[% END %][% album.artist %][% END %]
+        </span>
+        </div>
+        [% END %]
+        </a>
+    </div>
 </div>
 [%- END %]
+
+[% titleRight = BLOCK %]
+    <div id="viewSelect"></div>
+[%- END -%]
 
 [%- infoTab = BLOCK -%]
 <div>[% "ALBUMS" | string %] [% pageinfo.startitem + 1 %] [% "TO" | string %] [% pageinfo.enditem + 1 %] [% "OF" | string %] [% pageinfo.totalitems %]</div>

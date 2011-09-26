@@ -117,8 +117,21 @@ sub showAlbums {
 			'perPage'      => $itemsPerPage,
 		});
 
-    $params->{'showAlbumTitle'} = !defined $prefs->get('showAlbumTitle') || $prefs->get('showAlbumTitle') eq 'on';
     $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
+
+    $params->{'showTitle'} = !defined $prefs->get('showAlbumTitle') || $prefs->get('showAlbumTitle') eq 'on';
+    $params->{'showArtist'} = $serverPrefs->get('showArtist');
+    $params->{'showYear'} = $serverPrefs->get('showYear');
+
+    my %orderByList = (
+    	ALBUM                => 'album',
+    	SORT_YEARALBUM       => 'yearalbum',
+    	SORT_YEARARTISTALBUM => 'yearartistalbum',
+    	SORT_ARTISTALBUM     => 'artistalbum',
+    	SORT_ARTISTYEARALBUM => 'artflow',
+    );
+    push @{$params->{'orderByList'}}, %orderByList;
+
 
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;

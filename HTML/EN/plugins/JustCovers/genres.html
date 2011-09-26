@@ -10,7 +10,7 @@
 
 [%- FOREACH genre = genres %]
     <div class="jcCell" style="width:[% size %]px;height:[% size %]px">
-       <div class="jcItem">
+       <div class="jcGenre">
           <a href="[% webroot %]plugins/JustCovers/albums.html?genre=[% genre.id %]&player=[% playerURI %]">
              <img class="jcImage" src="[% webroot %]music/[% genre.coverid %]/cover_[% size %]x[% size %]_o.jpg" style="width:[% size %]px;height:[% size %]px"/>
              <div class="jcText" style="font-size:[% size / 6 %]px"><center>[% genre.name %]</center></div>
