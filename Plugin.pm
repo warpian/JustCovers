@@ -30,6 +30,7 @@ use Slim::Utils::Log;
 use List::Util qw(max);
 use POSIX qw(ceil);
 use Plugins::JustCovers::Settings;
+use Slim::Menu::BrowseLibrary;
 
 my $log = Slim::Utils::Log->addLogCategory( {
 	category     => 'plugin.justcovers',
@@ -42,6 +43,14 @@ my $serverPrefs = preferences('server');
 my $collate = Slim::Utils::OSDetect->getOS()->sqlHelperClass()->collate();
 
 my $allGenres; # cached genre info (id => genre) for use by albums.html
+
+my %orderByList = (
+    ALBUM                => 'album',
+    SORT_YEARALBUM       => 'yearalbum',
+    SORT_YEARARTISTALBUM => 'yearartistalbum',
+    SORT_ARTISTALBUM     => 'artistalbum',
+    SORT_ARTISTYEARALBUM => 'artflow',
+);
 
 sub setMode { 
     my $client = shift; 
@@ -122,17 +131,7 @@ sub showAlbums {
     $params->{'showTitle'} = !defined $prefs->get('showAlbumTitle') || $prefs->get('showAlbumTitle') eq 'on';
     $params->{'showArtist'} = $serverPrefs->get('showArtist');
     $params->{'showYear'} = $serverPrefs->get('showYear');
-
-    my %orderByList = (
-    	ALBUM                => 'album',
-    	SORT_YEARALBUM       => 'yearalbum',
-    	SORT_YEARARTISTALBUM => 'yearartistalbum',
-    	SORT_ARTISTALBUM     => 'artistalbum',
-    	SORT_ARTISTYEARALBUM => 'artflow',
-    );
-    push @{$params->{'orderByList'}}, %orderByList;
-
-
+    $params->{'orderByList'} = \%orderByList;
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;
     $params->{'pageicon'} = $Slim::Web::Pages::additionalLinks{icons}{$title};

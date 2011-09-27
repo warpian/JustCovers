@@ -8,43 +8,53 @@
     [% PROCESS jsString id='SORT_BY' jsId='sort_by' %]
     [% PROCESS jsString id='ALBUM_DISPLAY_OPTIONS' jsId='display_options' %]
 
-    var orderByList;
-    orderByList = {
-       '[% "ALBUM" | string %]'                : 'album.titlesort',
-       '[% "SORT_YEARALBUM" | string %]'       : 'album.year,album.titlesort',
-       '[% "SORT_YEARARTISTALBUM" | string %]' : 'album.year,contributor.namesort,album.titlesort',
-       '[% "SORT_ARTISTALBUM" | string %]'     : 'contributor.namesort,album.titlesort',
-       '[% "SORT_ARTISTYEARALBUM" | string %]' : 'contributor.namesort,album.year,album.titlesort',
-       '[% "SORT_GENREALBUM" | string %]'      : 'genre.namesort,album.titlesort',
-       '[% "SORT_GENREARTISTALBUM" | string %]': 'genre.namesort,contributor.namesort,album.titlesort'
-    }
+    var orderByList = {};
+    [% FOREACH key = orderByList.keys.sort %]
+    orderByList["[% key | string %]"] = '[% orderByList.$key | replace("'", "%27") %]';
+    [%- END %]
 
     Ext.onReady(function() {
-		if (Ext.get('viewSelect')) {
-			var menu = new Ext.menu.Menu();
+        var menu = new Ext.menu.Menu();
+        menu.add('<span class="menu-title">' + SqueezeJS.string('sort_by') + '...</span>');
 
-			var sortOrder = SqueezeJS.getCookie('Squeezebox-orderBy');
-//            alert('sortOrder:' + sortOrder);
-			for (order in orderByList) {
-				menu.add(new Ext.menu.CheckItem({
-					text: order,
-					handler: function(ev){
-						this.chooseAlbumOrderBy(orderByList[ev.text]);
-					},
-					scope: this,
-					checked: (orderByList[order] == sortOrder),
-					group: 'sortOrder'
-				}));
-			}
+		var selectedValue = SqueezeJS.getCookie('Squeezebox-orderBy');
+        var selectedLabel;
+        for (order in orderByList) {
+            var isSelected = (orderByList[order] == selectedValue);
+            if (isSelected) {
+                selectedLabel = order;
+            }
 
-			new SqueezeJS.UI.SplitButton({
-				renderTo: 'viewSelect',
-				cls: 'x-btn-text',
-                text: 'hallo',
-				menu: menu,
-				arrowTooltip: SqueezeJS.string('display_options')
-			});
-        }});
+            menu.add(new Ext.menu.CheckItem({
+                text: order,
+                handler: function(ev) {
+                    this.chooseAlbumOrderBy(orderByList[ev.text]);
+                },
+                scope: this,
+                checked: isSelected,
+                group: 'sortOrder'}));
+        }
+
+        new SqueezeJS.UI.SplitButton({
+            renderTo: 'viewSelect',
+            cls: 'x-btn-text',
+            text: selectedLabel,
+            menu: menu,
+            arrowTooltip: SqueezeJS.string('display_options')
+        });
+    });
+
+    function chooseAlbumOrderBy(option) {
+
+        var params = location.search;
+        params = params.replace(/&orderBy=[\w\.,]*/ig, '');
+
+        if (option)
+            params += '&orderBy=' + option;
+
+        SqueezeJS.setCookie('Squeezebox-orderBy', option);
+        location.search = params;
+    }
 
  </script>
 
