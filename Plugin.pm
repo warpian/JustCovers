@@ -52,6 +52,14 @@ my %orderByList = (
     SORT_ARTISTYEARALBUM => 'artflow',
 );
 
+my %orderBySQL = (
+    album => "album.titlesort $collate",
+    artistalbum => "artist.namesort $collate, album.titlesort $collate",
+    artflow => "artist.namesort $collate, album.year, album.titlesort $collate",
+    yearalbum => "album.year, album.titlesort $collate",
+    yearartistalbum => "album.year, artist.namesort $collate, album.titlesort $collate",
+);
+
 sub setMode { 
     my $client = shift; 
 } 
@@ -110,7 +118,7 @@ sub showAlbums {
     my $itemsPerPage = max($params->{'itemsPerPage'} || $serverPrefs->get('itemsPerPage') || 100, 1);
     my $start = max($params->{'start'} || 0, 0);
 
-    my $result = getAlbumsByGenre($genreId, $itemsPerPage, $start);
+    my $result = getAlbumsByGenre($genreId, $itemsPerPage, $start, $params->{'orderBy'});
     my $totalAlbums = $result->{'total'};
 
     if ($start < $totalAlbums) {
@@ -135,7 +143,7 @@ sub showAlbums {
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;
     $params->{'pageicon'} = $Slim::Web::Pages::additionalLinks{icons}{$title};
-    
+
     # bread crum navigation
     push @{$params->{'pwd_list'}}, {
 		'title' => string($title),
@@ -194,6 +202,8 @@ sub getAlbumsByGenre {
     my $genreId = shift;    
     my $itemsPerPage = shift;
     my $start = shift;
+    my $orderByCookie = shift;
+    my $orderBy = %orderBySQL->{$orderByCookie} || %orderBySQL->{artistalbum};
 
 # Note on not using LIMIT:
 # Unfortunately SQLite has no SQL_CALC_FOUND_ROWS like MySQL does.
@@ -222,7 +232,7 @@ WHERE
             genre_track.genre = $genreId
         )
 ORDER BY 
-     artist.namesort $collate, album.year, album.titlesort $collate
+     $orderBy
 EOT
 
     my $dbh = Slim::Schema->dbh;
