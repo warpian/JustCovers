@@ -1,21 +1,20 @@
 <?xml version='1.0' standalone='yes'?>
-<extension>      
+<extension>
   <name>PLUGIN_JUSTCOVERS</name>
   <creator>Tom Kalmijn</creator>
   <defaultState>enabled</defaultState>
   <description>PLUGIN_JUSTCOVERS_DESC</description>
   <email>tkalmijn@yahoo.com</email>
   <homepageURL>http://www.warpgear.nl/sb/justcovers</homepageURL>
-  <optionsURL>plugins/JustCovers/settings/basic.html</optionsURL>
   <icon>plugins/JustCovers/html/images/justcovers.png</icon>
-  <id>R0A76761-4413-4494-A559-E688DCFC674C</id>
+  <id>89EFF566-EAD5-11E0-9570-C21DB9885BB3</id>
   <module>Plugins::JustCovers::Plugin</module>
+  <optionsURL>plugins/JustCovers/settings/basic.html</optionsURL>
   <targetApplication>
     <id>SqueezeCenter</id>
-    <minVersion>7.6.0</minVersion>
     <maxVersion>*</maxVersion>
+    <minVersion>7.6.0</minVersion>
   </targetApplication>
-  <type>2</type><!-- type=extension -->
+  <type>2</type>
   <version>0.1</version>
 </extension>
-

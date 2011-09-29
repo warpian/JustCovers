@@ -236,7 +236,8 @@ ORDER BY
 EOT
 
     my $dbh = Slim::Schema->dbh;
-    my $sth = $dbh->prepare_cached($sql);
+    my $sth = $dbh->prepare_cached($sql)
+    ;
     $sth->execute;			
 
     my $albums = ();
