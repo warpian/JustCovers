@@ -11,7 +11,13 @@ SETUP_SHOW_ALBUM_TITLE_DESC
 	EN	You may choose to show the album title when browsing with Just Covers. When enabled, the album title will be shown below the album art.
 
 SETUP_SHOW_SHADOWS
-	EN	Show Shadows with Albums.
+	EN	Show Shadows with Albums
 
 SETUP_SHOW_SHADOWS_DESC
 	EN	Show Shadows with Albums DESC?
+
+SETUP_EXTRA_PADDING
+	EN	Extra padding between album art
+
+SETUP_EXTRA_PADDING_DESC
+	EN  Put some extra padding (measured in pixels) between the album art.			

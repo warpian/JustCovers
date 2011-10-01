@@ -20,14 +20,14 @@ sub page {
 }
 
 sub prefs {
-	return ($prefs, qw(showAlbumTitle showShadows));
+	return ($prefs, qw(showAlbumTitle showShadows extraPadding));
 }
 
 sub handler {
 	my ($class, $client, $params) = @_;
 
 	if ($params->{'saveSettings'}) {
-
+	
         $params->{'pref_showAlbumTitle'} = defined $params->{'pref_showAlbumTitle'} ? 'on' : 'off';
         $params->{'pref_showShadows'} = defined $params->{'pref_showShadows'} ? 'on' : 'off';
     }
@@ -35,6 +35,7 @@ sub handler {
 	if ($params->{'reset'}) {
         $params->{'showAlbumTitle'} = 'on';
         $params->{'showShadows'} = 'off';
+        $params->{'extraPadding'} = 10;
     }
 
     return $class->SUPER::handler($client, $params);

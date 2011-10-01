@@ -31,11 +31,11 @@
 [%# detected user-agents in 'browserType' -> 'Firefox' 'Opera' 'Safari' 'IE7' 'IE' %]
 
 [%- BLOCK gencontrol -%]
-    [% IF album.isFavorite %]
-        [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
-    [% ELSE %]
-        [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
-    [% END %]
+  [% IF album.isFavorite -%]
+    [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
+  [% ELSE %]
+    [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
+  [% END -%]
     [% WRAPPER playlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.playLink | replace("'", "%27") %]&player=[% player | uri %]', 1, SqueezeJS.string('connecting_for'));"[% END %]
     [% IF allLinks; WRAPPER insertlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.insertLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
     [% WRAPPER addlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.addLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END %]
@@ -45,13 +45,14 @@
         
 <ul class="thumbwrap">
 [%- FOREACH album = albums %]
-<li class="thumbwrap" style="width:[% size + 20 %]px;">
+<li class="thumbwrap" style="width:[% size + 20 + (extraPadding * 2) %]px;">
+    <div style="padding:[% extraPadding %]px">
     <div id="db[% album.id %]_selector" class="selectorMarker" onmouseover="Highlighter.highlight(this);">
     <div class="selector_topRight"><div class="selector_topLeft"><div class="selector_bottomRight"><div class="selector_bottomLeft">
 
     <div class="thumbwrap">
-        <div class="thumbArtwork" style="width:[% size %]px;height:[% size %]px;">
-            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title %]&album_id=[% album.id %]&player=[% playerURL %]">
+        <div class="thumbArtwork [% IF browserType == 'Firefox' && showShadows %] shadow[% END -%]" style="width:[% size %]px;height:[% size %]px;">
+            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title %]&album_id=[% album.id %]&player=[% playerURI %]">
                 <img onload="resize(this, [% size %])"
                     title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
                     alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
@@ -60,16 +61,17 @@
             <span class="browsedbControls">[% PROCESS gencontrol %]</span>
         </div>
 
-[% IF showTitle || album.coverid == 0 %]
+[% IF showTitle || showArtist || showYear || album.coverid == 0 %]
         <div class="artworkText" style="width:[% size %]px;">
-            [% album.title %]
-            [% IF showYear && album.year %]([% album.year %])[% END %]
-            [% IF showArtist %][% IF showTitle || showYear %]<br/>[% END %][% album.artist %][% END %]
+            [%- IF showTitle || album.coverid == 0 %][% album.title %]<br/>[% END %]
+            [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
+            [%- IF showArtist; album.artist;  END -%]
         </div>
 [% END %]
     </div>
     
     </div></div></div></div>
+    </div>
     </div>
 </li>
 [%- END %]

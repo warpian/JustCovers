@@ -6,6 +6,12 @@
 
 [%- END %]
 
+[% WRAPPER setting title="SETUP_EXTRA_PADDING" desc="SETUP_EXTRA_PADDING_DESC" -%]
+
+<input type="text" size="15" id="extraPadding" name="pref_extraPadding" class="stdedit sliderInput_0_50 canValidate valid" value="[% prefs.pref_extraPadding %]" style="visibility: visible;">
+
+[%- END %]
+
 [% WRAPPER setting title="SETUP_SHOW_SHADOWS" desc="SETUP_SHOW_SHADOWS_DESC" -%]
 
 <input type="checkbox" name="pref_showShadows" [% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
