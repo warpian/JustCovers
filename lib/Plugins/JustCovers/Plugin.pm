@@ -127,15 +127,13 @@ sub showAlbums {
 
     # create paging info
     $params->{'pageinfo'} = Slim::Web::Pages::Common->pageInfo({
-
-			'itemCount'    => $totalAlbums,
-			'otherParams'  => "&genre=$genreId&itemsPerPage=$itemsPerPage&player=" . uri_escape_utf8($params->{'player'}),
-			'start'        => $start,
-			'perPage'      => $itemsPerPage,
-		});
+        'itemCount'    => $totalAlbums,
+        'otherParams'  => "&genre=$genreId&itemsPerPage=$itemsPerPage&player=" . uri_escape_utf8($params->{'player'}),
+        'start'        => $start,
+        'perPage'      => $itemsPerPage,
+    });
 
     $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
-
     $params->{'showTitle'} = !defined $prefs->get('showAlbumTitle') || $prefs->get('showAlbumTitle') eq 'on';
     $params->{'showArtist'} = $serverPrefs->get('showArtist');
     $params->{'showYear'} = $serverPrefs->get('showYear');

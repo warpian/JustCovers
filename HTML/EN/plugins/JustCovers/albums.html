@@ -31,36 +31,42 @@
 [%# detected user-agents in 'browserType' -> 'Firefox' 'Opera' 'Safari' 'IE7' 'IE' %]
 
 [%- BLOCK gencontrol -%]
-    [% IF item.isFavorite %]
-        [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% item.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
+    [% IF album.isFavorite %]
+        [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
     [% ELSE %]
-        [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% item.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
+        [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
     [% END %]
-    [% WRAPPER playlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.playLink | replace("'", "%27") %]&player=[% player | uri %]', 1, SqueezeJS.string('connecting_for'));"[% END %]
-    [% IF allLinks; WRAPPER insertlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.insertLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
-    [% WRAPPER addlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.addLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END %]
-    [% IF allLinks; WRAPPER removelink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.removeLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
-    [% WRAPPER cmdlink cmdimage='b_mmmix.gif' cmdtitle='MORE' %]href="[% webroot %]clixmlbrowser/clicmd=albuminfo+items&album_id=[% item.id %]&player=[% playerURI %]"[% END %]
+    [% WRAPPER playlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.playLink | replace("'", "%27") %]&player=[% player | uri %]', 1, SqueezeJS.string('connecting_for'));"[% END %]
+    [% IF allLinks; WRAPPER insertlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.insertLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
+    [% WRAPPER addlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.addLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END %]
+    [% IF allLinks; WRAPPER removelink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.removeLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
+    [% WRAPPER cmdlink cmdimage='b_mmmix.gif' cmdtitle='MORE' %]href="[% webroot %]clixmlbrowser/clicmd=albuminfo+items&album_id=[% album.id %]&player=[% playerURI %]"[% END %]
 [% END %]
         
 <ul class="thumbwrap">
-[%- FOREACH item = albums %]
+[%- FOREACH album = albums %]
 <li class="thumbwrap" style="width:[% size + 20 %]px;">
-    <div id="db[% item.id %]_selector" class="selectorMarker" onmouseover="Highlighter.highlight(this);">
+    <div id="db[% album.id %]_selector" class="selectorMarker" onmouseover="Highlighter.highlight(this);">
     <div class="selector_topRight"><div class="selector_topLeft"><div class="selector_bottomRight"><div class="selector_bottomLeft">
 
     <div class="thumbwrap">
         <div class="thumbArtwork" style="width:[% size %]px;height:[% size %]px;">
-            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% item.title %]&album_id=[% item.id %]&player=[% playerURL %]">
+            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title %]&album_id=[% album.id %]&player=[% playerURL %]">
                 <img onload="resize(this, [% size %])"
-                    title="&quot;[% item.title %]&quot;[%- IF item.year %] ([% item.year %])[% END %] by [% item.artist %]"
-                    alt="&quot;[% item.title %]&quot;[%- IF item.year %] ([% item.year %])[% END %] by [% item.artist %]"
-                    src="[% webroot %]music/[% item.coverid %]/cover_[% size %]x[% size %]_o.jpg">
+                    title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
+                    alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
+                    src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg">
             </a>
             <span class="browsedbControls">[% PROCESS gencontrol %]</span>
         </div>
 
-        <div class="artworkText" style="width:[% size %]px;"></div>
+[% IF showTitle || album.coverid == 0 %]
+        <div class="artworkText" style="width:[% size %]px;">
+            [% album.title %]
+            [% IF showYear && album.year %]([% album.year %])[% END %]
+            [% IF showArtist %][% IF showTitle || showYear %]<br/>[% END %][% album.artist %][% END %]
+        </div>
+[% END %]
     </div>
     
     </div></div></div></div>
