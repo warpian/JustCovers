@@ -249,7 +249,14 @@ EOT
 
             utf8::decode($album->{'title'}) if defined $album->{'title'};
             utf8::decode($album->{'artist'}) if defined $album->{'artist'};
-            $album->{'coverid'} = 0 if !defined $album->{'coverid'}; 
+            $album->{'coverid'} = 0 if !defined $album->{'coverid'};
+
+            # it is a bit arbitrary to process these URLs here, but it matches the 'xmlbrowser.html' templates 
+            $album->{'playLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:' . $album->{'id'};
+            $album->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=album_id:' . $album->{'id'};
+            $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
+            $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
+
             push @{$albums}, $album;
         } else {
             last if !defined $sth->fetchrow_arrayref();

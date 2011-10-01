@@ -3,7 +3,8 @@
 
 [%- extJsScripts = BLOCK -%]
 <link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css" />
-                                                  
+<script type="text/javascript" src="[% webroot %]plugins/JustCovers/html/js/justcovers.js"></script>
+        
 <script type="text/javascript">
     [% PROCESS jsString id='SORT_BY' jsId='sort_by' %]
     [% PROCESS jsString id='ALBUM_DISPLAY_OPTIONS' jsId='display_options' %]
@@ -12,50 +13,8 @@
     [% FOREACH key = orderByList.keys.sort %]
     orderByList["[% key | string %]"] = '[% orderByList.$key | replace("'", "%27") %]';
     [%- END %]
-
-    Ext.onReady(function() {
-        var menu = new Ext.menu.Menu();
-        menu.add('<span class="menu-title">' + SqueezeJS.string('sort_by') + '...</span>');
-
-		var selectedValue = SqueezeJS.getCookie('Squeezebox-orderBy');
-        var selectedLabel;
-        for (order in orderByList) {
-            var isSelected = (orderByList[order] == selectedValue);
-            if (isSelected) {
-                selectedLabel = order;
-            }
-
-            menu.add(new Ext.menu.CheckItem({
-                text: order,
-                handler: function(ev) {
-                    this.chooseAlbumOrderBy(orderByList[ev.text]);
-                },
-                scope: this,
-                checked: isSelected,
-                group: 'sortOrder'}));
-        }
-
-        new SqueezeJS.UI.SplitButton({
-            renderTo: 'viewSelect',
-            cls: 'x-btn-text',
-            text: selectedLabel,
-            menu: menu,
-            arrowTooltip: SqueezeJS.string('display_options')
-        });
-    });
-
-    function chooseAlbumOrderBy(option) {
-
-        var params = location.search;
-        params = params.replace(/&orderBy=[\w\.,]*/ig, '');
-
-        if (option)
-            params += '&orderBy=' + option;
-
-        SqueezeJS.setCookie('Squeezebox-orderBy', option);
-        location.search = params;
-    }
-
+    
+    Ext.onReady(createOrderByControl);
  </script>
 
 [%- END %]
@@ -66,38 +25,49 @@
 [% END -%]
 [% END -%]
         
-[% PROCESS pageheader.html %]
+[% PROCESS pageheader.html  %]
 [% END %]
 
 [%# detected user-agents in 'browserType' -> 'Firefox' 'Opera' 'Safari' 'IE7' 'IE' %]
 
-[%- FOREACH album = albums %]
-<div class="jcCell" style="width:[% size %]px;height:[% size %]px">
-    <div class="thumbWrap">
-        <div class="thumbArtwork">
-        <a href="javascript:void()" onclick="javascript:SqueezeJS.Controller.urlRequest('/anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:[% album.id %]&player=[% playerURI %]', 1, SqueezeJS.string('connecting_for'));this.blur(); return true;">
-
-        <img [% IF browserType == 'Firefox' && showShadows %]class="shadow" [% END -%]
-         src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg"
-         width="[% size %]px" height="[% size %]px"
-         alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
-         title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"/>
-        <a/>
-        </div>
+[%- BLOCK gencontrol -%]
+    [% IF item.isFavorite %]
+        [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% item.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
+    [% ELSE %]
+        [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% item.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END %]
+    [% END %]
+    [% WRAPPER playlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.playLink | replace("'", "%27") %]&player=[% player | uri %]', 1, SqueezeJS.string('connecting_for'));"[% END %]
+    [% IF allLinks; WRAPPER insertlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.insertLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
+    [% WRAPPER addlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.addLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END %]
+    [% IF allLinks; WRAPPER removelink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% item.removeLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
+    [% WRAPPER cmdlink cmdimage='b_mmmix.gif' cmdtitle='MORE' %]href="[% webroot %]clixmlbrowser/clicmd=albuminfo+items&album_id=[% item.id %]&player=[% playerURI %]"[% END %]
+[% END %]
         
-        [% IF showTitle || showArtist || showYear || album.coverid == 0 %]
-        <div class="artworkText" style="width:[% size %]px;">
-        <span width="[% size %]px">
-            [% IF showTitle || album.coverid == 0 %][% album.title %] [% END %]
-            [% IF showYear && album.year %]([% album.year %])[% END %]
-            [% IF showArtist %][% IF showTitle || showYear %]<br/>[% END %][% album.artist %][% END %]
-        </span>
+<ul class="thumbwrap">
+[%- FOREACH item = albums %]
+<li class="thumbwrap" style="width:[% size + 20 %]px;">
+    <div id="db[% item.id %]_selector" class="selectorMarker" onmouseover="Highlighter.highlight(this);">
+    <div class="selector_topRight"><div class="selector_topLeft"><div class="selector_bottomRight"><div class="selector_bottomLeft">
+
+    <div class="thumbwrap">
+        <div class="thumbArtwork" style="width:[% size %]px;height:[% size %]px;">
+            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% item.title %]&album_id=[% item.id %]&player=[% playerURL %]">
+                <img onload="resize(this, [% size %])"
+                    title="&quot;[% item.title %]&quot;[%- IF item.year %] ([% item.year %])[% END %] by [% item.artist %]"
+                    alt="&quot;[% item.title %]&quot;[%- IF item.year %] ([% item.year %])[% END %] by [% item.artist %]"
+                    src="[% webroot %]music/[% item.coverid %]/cover_[% size %]x[% size %]_o.jpg">
+            </a>
+            <span class="browsedbControls">[% PROCESS gencontrol %]</span>
         </div>
-        [% END %]
-        </a>
+
+        <div class="artworkText" style="width:[% size %]px;"></div>
     </div>
-</div>
+    
+    </div></div></div></div>
+    </div>
+</li>
 [%- END %]
+</ul>
 
 [% titleRight = BLOCK %]
     <div id="viewSelect"></div>
