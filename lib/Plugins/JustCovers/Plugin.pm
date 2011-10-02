@@ -29,8 +29,12 @@ use Slim::Utils::Prefs;
 use Slim::Utils::Log;
 use List::Util qw(max);
 use POSIX qw(ceil);
-use Plugins::JustCovers::Settings;
 use Slim::Menu::BrowseLibrary;
+use Slim::Utils::PluginManager;
+
+use Plugins::JustCovers::Settings;
+
+my $VERSION = Slim::Utils::PluginManager->allPlugins->{'JustCovers'}->{'version'};
 
 my $log = Slim::Utils::Log->addLogCategory( {
 	category     => 'plugin.justcovers',
@@ -44,21 +48,21 @@ my $collate = Slim::Utils::OSDetect->getOS()->sqlHelperClass()->collate();
 
 my $allGenres; # cached genre info (id => genre) for use by albums.html
 
-my %orderByList = (
+my $orderByList = {
     ALBUM                => 'album',
     SORT_YEARALBUM       => 'yearalbum',
     SORT_YEARARTISTALBUM => 'yearartistalbum',
     SORT_ARTISTALBUM     => 'artistalbum',
     SORT_ARTISTYEARALBUM => 'artflow',
-);
+};
 
-my %orderBySQL = (
+my $orderBySQL = {
     album => "album.titlesort $collate",
     artistalbum => "artist.namesort $collate, album.titlesort $collate",
     artflow => "artist.namesort $collate, album.year, album.titlesort $collate",
     yearalbum => "album.year, album.titlesort $collate",
     yearartistalbum => "album.year, artist.namesort $collate, album.titlesort $collate",
-);
+};
 
 sub setMode { 
     my $client = shift; 
@@ -92,7 +96,8 @@ sub showGenres {
     my $title = 'PLUGIN_JUSTCOVERS';
     $params->{'pagetitle'} = $title;
     $params->{'pageicon'} = $Slim::Web::Pages::additionalLinks{icons}{$title};
-   
+    $params->{'jcversion'} = $VERSION;
+
     # init bread crum navigation (actually a fixed hierarchical navigation)
     push @{$params->{'pwd_list'}}, {
 		'title' => string($title),
@@ -108,7 +113,7 @@ sub showAlbums {
     
     my $genreId = $params->{'genre'};
 
-    # assert valid genre id 
+    # assert valid genre id
     if (!defined $genreId || !defined $allGenres->{$genreId}) { die "Cannot show albums: invalid genre id.\n" };
 
     my $genreName = $allGenres->{$genreId}->{'name'};
@@ -118,7 +123,7 @@ sub showAlbums {
     my $itemsPerPage = max($params->{'itemsPerPage'} || $serverPrefs->get('itemsPerPage') || 100, 1);
     my $start = max($params->{'start'} || 0, 0);
 
-    my $result = getAlbumsByGenre($genreId, $itemsPerPage, $start, $params->{'orderBy'});
+    my $result = getAlbumsByGenre($client, $genreId, $itemsPerPage, $start, $params->{'orderBy'});
     my $totalAlbums = $result->{'total'};
 
     if ($start < $totalAlbums) {
@@ -133,15 +138,17 @@ sub showAlbums {
         'perPage'      => $itemsPerPage,
     });
 
+    $params->{'doFavorites'} = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::Favorites::Plugin');
     $params->{'extraPadding'} = defined $prefs->get('extraPadding') ? $prefs->get('extraPadding') : 10;
     $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
     $params->{'showTitle'} = !defined $prefs->get('showAlbumTitle') || $prefs->get('showAlbumTitle') eq 'on';
     $params->{'showArtist'} = $serverPrefs->get('showArtist');
     $params->{'showYear'} = $serverPrefs->get('showYear');
-    $params->{'orderByList'} = \%orderByList;
+    $params->{'orderByList'} = \%{$orderByList};
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;
     $params->{'pageicon'} = $Slim::Web::Pages::additionalLinks{icons}{$title};
+    $params->{'jcversion'} = $VERSION;
 
     # bread crum navigation
     push @{$params->{'pwd_list'}}, {
@@ -198,11 +205,12 @@ EOT
 # TODO: make customizable (hitch hike on general sorting options)?
 #
 sub getAlbumsByGenre {
+    my $client = shift;
     my $genreId = shift;    
     my $itemsPerPage = shift;
     my $start = shift;
     my $orderByCookie = shift;
-    my $orderBy = %orderBySQL->{$orderByCookie} || %orderBySQL->{artistalbum};
+    my $orderBy = $orderBySQL->{$orderByCookie} || $orderBySQL->{'artistalbum'};
 
 # Note on not using LIMIT:
 # Unfortunately SQLite has no SQL_CALC_FOUND_ROWS like MySQL does.
@@ -239,6 +247,8 @@ EOT
     ;
     $sth->execute;			
 
+	my $favorites = Slim::Utils::Favorites->new($client);
+
     my $albums = ();
     my $count = 0;
     while (1) {
@@ -255,6 +265,7 @@ EOT
             $album->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=album_id:' . $album->{'id'};
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
             $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
+            $album->{'isFavorite'} = defined $favorites->findUrl($album->{'playLink'});
 
             push @{$albums}, $album;
         } else {

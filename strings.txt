@@ -14,10 +14,10 @@ SETUP_SHOW_SHADOWS
 	EN	Show Shadows with Albums
 
 SETUP_SHOW_SHADOWS_DESC
-	EN	Show Shadows with Albums DESC?
+	EN	Show Shadows with Albums. This feature has only been tested with Firefox 3.6.
 
 SETUP_EXTRA_PADDING
-	EN	Extra padding between album art
+	EN	Space between Albums
 
 SETUP_EXTRA_PADDING_DESC
 	EN  Put some extra padding (measured in pixels) between the album art.			

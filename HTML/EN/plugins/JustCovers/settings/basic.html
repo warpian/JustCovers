@@ -1,21 +1,15 @@
 [% PROCESS settings/header.html %]
 
 [% WRAPPER setting title="SETUP_SHOW_ALBUM_TITLE" desc="SETUP_SHOW_ALBUM_TITLE_DESC" -%]
-
-<input type="checkbox" name="pref_showAlbumTitle" [% IF !prefs.pref_showAlbumTitle || prefs.pref_showAlbumTitle == 'on' %]checked="checked" [% END %]>
-
-[%- END %]
-
-[% WRAPPER setting title="SETUP_EXTRA_PADDING" desc="SETUP_EXTRA_PADDING_DESC" -%]
-
-<input type="text" size="15" id="extraPadding" name="pref_extraPadding" class="stdedit sliderInput_0_50 canValidate valid" value="[% prefs.pref_extraPadding %]" style="visibility: visible;">
-
+    <input type="checkbox" name="pref_showAlbumTitle" [% IF !prefs.pref_showAlbumTitle || prefs.pref_showAlbumTitle == 'on' %]checked="checked" [% END %]>
 [%- END %]
 
 [% WRAPPER setting title="SETUP_SHOW_SHADOWS" desc="SETUP_SHOW_SHADOWS_DESC" -%]
-
-<input type="checkbox" name="pref_showShadows" [% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
-
+    <input type="checkbox" name="pref_showShadows" [% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
 [%- END %]
 
+[% WRAPPER setting title="SETUP_EXTRA_PADDING" desc="SETUP_EXTRA_PADDING_DESC" -%]
+    <input type="text" size="15" id="extraPadding" name="pref_extraPadding" class="stdedit sliderInput_0_50 canValidate valid" value="[% prefs.pref_extraPadding || 10 %]" style="visibility: visible;">
+[%- END %]
+        
 [% PROCESS settings/footer.html %]

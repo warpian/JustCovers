@@ -2,8 +2,8 @@
 [%- pagetitle = 'PLUGIN_JUSTCOVERS' | string -%]
 
 [%- extJsScripts = BLOCK -%]
-<link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css" />
-<script type="text/javascript" src="[% webroot %]plugins/JustCovers/html/js/justcovers.js"></script>
+<link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css?r=[% jcversion %]" />
+<script type="text/javascript" src="[% webroot %]plugins/JustCovers/html/js/justcovers.js?r=[% jcversion %]"></script>
         
 <script type="text/javascript">
     [% PROCESS jsString id='SORT_BY' jsId='sort_by' %]
@@ -31,11 +31,13 @@
 [%# detected user-agents in 'browserType' -> 'Firefox' 'Opera' 'Safari' 'IE7' 'IE' %]
 
 [%- BLOCK gencontrol -%]
-  [% IF album.isFavorite -%]
-    [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
-  [% ELSE %]
-    [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
-  [% END -%]
+    [% IF doFavorites %]
+       [% IF album.isFavorite -%]
+          [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
+       [% ELSE %]
+          [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
+       [% END -%]
+    [% END %]
     [% WRAPPER playlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.playLink | replace("'", "%27") %]&player=[% player | uri %]', 1, SqueezeJS.string('connecting_for'));"[% END %]
     [% IF allLinks; WRAPPER insertlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.insertLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
     [% WRAPPER addlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.addLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END %]
@@ -51,7 +53,7 @@
     <div class="selector_topRight"><div class="selector_topLeft"><div class="selector_bottomRight"><div class="selector_bottomLeft">
 
     <div class="thumbwrap">
-        <div class="thumbArtwork [% IF browserType == 'Firefox' && showShadows %] shadow[% END -%]" style="width:[% size %]px;height:[% size %]px;">
+        <div class="thumbArtwork[% IF browserType == 'Firefox' && showShadows %] shadow[% END -%]" style="width:[% size %]px;height:[% size %]px;">
             <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title %]&album_id=[% album.id %]&player=[% playerURI %]">
                 <img onload="resize(this, [% size %])"
                     title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
