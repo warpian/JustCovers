@@ -2,8 +2,8 @@
 [%- pagetitle = 'PLUGIN_JUSTCOVERS' | string -%]
 
 [%- extJsScripts = BLOCK -%]
-<link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css?r=[% jcversion %]" />
-<script type="text/javascript" src="[% webroot %]plugins/JustCovers/html/js/justcovers.js?r=[% jcversion %]"></script>
+<link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css?v=[% jcversion %]" />
+<script type="text/javascript" src="[% webroot %]plugins/JustCovers/html/js/justcovers.js?v=[% jcversion %]"></script>
         
 <script type="text/javascript">
     [% PROCESS jsString id='SORT_BY' jsId='sort_by' %]
@@ -64,10 +64,10 @@
         </div>
 
 [% IF showTitle || showArtist || showYear || album.coverid == 0 %]
-        <div class="artworkText" style="width:[% size %]px;">
+        <div class="artworkText"Added padding setting to let the use put some space in between album art. style="width:[% size %]px;">
             [%- IF showTitle || album.coverid == 0 %][% album.title %]<br/>[% END %]
             [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
-            [%- IF showArtist; album.artist;  END -%]
+            [%- IF showArtist; album.artist; END -%]
         </div>
 [% END %]
     </div>
