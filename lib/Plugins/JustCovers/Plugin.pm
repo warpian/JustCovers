@@ -265,7 +265,8 @@ EOT
             $album->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=album_id:' . $album->{'id'};
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
             $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
-            $album->{'isFavorite'} = defined $favorites->findUrl($album->{'playLink'});
+            $album->{'favorites_url'} = 'db:album.title=' . uri_escape_utf8($album->{'title'});
+            $album->{'isFavorite'} = defined $favorites->findUrl($album->{'favorites_url'});
 
             push @{$albums}, $album;
         } else {

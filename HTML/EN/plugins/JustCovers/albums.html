@@ -33,9 +33,9 @@
 [%- BLOCK gencontrol -%]
     [% IF doFavorites %]
        [% IF album.isFavorite -%]
-          [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
+          [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.favorites_url | replace("'", "%27") | uri %]', '[% album.title | replace("'", "%27") | uri %]');"[% END -%]
        [% ELSE %]
-          [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.playLink | replace("'", "%27") | uri %]', '[% crumb.values.-1 | html %]');"[% END -%]
+          [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.favorites_url | replace("'", "%27") | uri %]', '[% album.title | replace("'", "%27") | uri %]');"[% END -%]
        [% END -%]
     [% END %]
     [% WRAPPER playlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.playLink | replace("'", "%27") %]&player=[% player | uri %]', 1, SqueezeJS.string('connecting_for'));"[% END %]
@@ -54,20 +54,20 @@
 
     <div class="thumbwrap">
         <div class="thumbArtwork[% IF browserType == 'Firefox' && showShadows %] shadow[% END -%]" style="width:[% size %]px;height:[% size %]px;">
-            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title %]&album_id=[% album.id %]&player=[% playerURI %]">
+            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title | replace("'", "%27") | uri %]&album_id=[% album.id %]&player=[% playerURI %]">
                 <img onload="resize(this, [% size %])"
-                    title="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
-                    alt="&quot;[% album.title %]&quot;[%- IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
+                    title="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
+                    alt="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
                     src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg">
             </a>
             <span class="browsedbControls">[% PROCESS gencontrol %]</span>
         </div>
 
 [% IF showTitle || showArtist || showYear || album.coverid == 0 %]
-        <div class="artworkText"Added padding setting to let the use put some space in between album art. style="width:[% size %]px;">
-            [%- IF showTitle || album.coverid == 0 %][% album.title %]<br/>[% END %]
+        <div class="artworkText" style="width:[% size %]px;">
+            [%- IF showTitle || album.coverid == 0 %][% album.title | html %]<br/>[% END %]
             [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
-            [%- IF showArtist; album.artist; END -%]
+            [%- IF showArtist; album.artist | html; END -%]
         </div>
 [% END %]
     </div>
