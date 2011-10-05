@@ -1,39 +1,14 @@
 
-
-.jcCell {
-    padding:20px;
-    float:left;
-}
-
 .jcGenre {
-    position:relative;
-    background-color: #f0f0f0;
+    background-color:#EEEEEE;
     width:100%;
     height:100%;
     border-style:solid;
     border-width:4px;
-    border-color:#343434;
+    border-color:#404040;
 }
 
-.jcAlbum {
-}
-
-.jcAlbum div {
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #ff0000;
-}
-
-.jcAlbum a {
-    text-decoration:none;    
-}
-
-.jcItem a {
-    text-decoration:none;
-}
-
-.jcImage {
-    position:absolute;
+.jcGenreImg {
     opacity:0.2;
     filter:alpha(opacity=20); // msie
 }
@@ -43,7 +18,7 @@
     top:40%;
     left:0px;
     width:100%;
-    color:#343434;
+    color:#404040;
 }
 
 .pageHeaderInfo {

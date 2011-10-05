@@ -55,7 +55,7 @@
     <div class="thumbwrap">
         <div class="thumbArtwork[% IF browserType == 'Firefox' && showShadows %] shadow[% END -%]" style="width:[% size %]px;height:[% size %]px;">
             <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title | replace("'", "%27") | uri %]&album_id=[% album.id %]&player=[% playerURI %]">
-                <img onload="resize(this, [% size %])"
+                <img width="[% size %]" height="[% size %]"
                     title="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
                     alt="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
                     src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg">
@@ -69,6 +69,8 @@
             [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
             [%- IF showArtist; album.artist | html; END -%]
         </div>
+[% ELSE %]
+        <span style="font-size:4px">&nbsp;</span>
 [% END %]
     </div>
     

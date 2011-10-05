@@ -8,16 +8,29 @@
 [% PROCESS pageheader.html %]
 [% END %]
 
+<ul class="thumbwrap">
 [%- FOREACH genre = genres %]
-    <div class="jcCell" style="width:[% size %]px;height:[% size %]px">
-       <div class="jcGenre">
-          <a href="[% webroot %]plugins/JustCovers/albums.html?genre=[% genre.id %]&player=[% playerURI %]">
-             <img class="jcImage" src="[% webroot %]music/[% genre.coverid %]/cover_[% size %]x[% size %]_o.jpg" style="width:[% size %]px;height:[% size %]px"/>
-             <div class="jcText" style="font-size:[% size / 6 %]px"><center>[% genre.name %]</center></div>
-          </a>
-       </div>
+<li class="thumbwrap" style="width:[% size + 27 + (extraPadding * 2) %]px;">
+    <div style="padding:[% extraPadding %]px">
+    <div id="db[% genre.id %]_selector" class="selectorMarker" onmouseover="Highlighter.highlight(this);">
+    <div class="selector_topRight"><div class="selector_topLeft"><div class="selector_bottomRight"><div class="selector_bottomLeft">
+
+    <div class="thumbwrap">
+        <div class="thumbArtwork jcGenre[% IF browserType == 'Firefox' && showShadows %] shadow[% END -%]" style="width:[% size %]px;height:[% size %]px;">
+            <a class="browseItemLink" href="[% webroot %]plugins/JustCovers/albums.html?genre=[% genre.id %]&player=[% playerURI %]">
+                <img width="[% size %]" height="[% size %]" class="jcGenreImg" src="[% webroot %]music/[% genre.coverid %]/cover_[% size %]x[% size %]_o.jpg">
+
+                <div class="jcText" style="font-size:[% size / 7 %]px"><center>[% genre.name %]</center></div>
+            </a>
+        </div>
     </div>
-[%- END %]   
+    <span style="font-size:4px">&nbsp;</span>
+    </div></div></div></div>
+    </div>
+    </div>
+</li>
+[%- END %]
+</ul>
 
 [%- IF !ajaxUpdate %]
 [% PROCESS pagefooter.html %]

@@ -34,7 +34,7 @@ use Slim::Utils::PluginManager;
 
 use Plugins::JustCovers::Settings;
 
-my $VERSION = Slim::Utils::PluginManager->allPlugins->{'JustCovers'}->{'version'};
+my $JCVersion;
 
 my $log = Slim::Utils::Log->addLogCategory( {
 	category     => 'plugin.justcovers',
@@ -78,6 +78,7 @@ sub initPlugin {
     if (main::WEBUI) {
         $allGenres = getGenres();
         Plugins::JustCovers::Settings->new;
+        $JCVersion = Slim::Utils::PluginManager->allPlugins->{'JustCovers'}->{'version'};
     }
 }
 
@@ -96,7 +97,9 @@ sub showGenres {
     my $title = 'PLUGIN_JUSTCOVERS';
     $params->{'pagetitle'} = $title;
     $params->{'pageicon'} = $Slim::Web::Pages::additionalLinks{icons}{$title};
-    $params->{'jcversion'} = $VERSION;
+    $params->{'jcversion'} = $JCVersion;
+    $params->{'extraPadding'} = defined $prefs->get('extraPadding') ? $prefs->get('extraPadding') : 10;
+    $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
 
     # init bread crum navigation (actually a fixed hierarchical navigation)
     push @{$params->{'pwd_list'}}, {
@@ -148,7 +151,7 @@ sub showAlbums {
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;
     $params->{'pageicon'} = $Slim::Web::Pages::additionalLinks{icons}{$title};
-    $params->{'jcversion'} = $VERSION;
+    $params->{'jcversion'} = $JCVersion;
 
     # bread crum navigation
     push @{$params->{'pwd_list'}}, {
@@ -266,7 +269,7 @@ EOT
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
             $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
             $album->{'favorites_url'} = 'db:album.title=' . uri_escape_utf8($album->{'title'});
-            $album->{'isFavorite'} = defined $favorites->findUrl($album->{'favorites_url'});
+            $album->{'isFavorite'} = $favorites->hasUrl($album->{'favorites_url'});
 
             push @{$albums}, $album;
         } else {
