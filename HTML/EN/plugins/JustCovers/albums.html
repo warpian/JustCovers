@@ -30,21 +30,6 @@
 
 [%# detected user-agents in 'browserType' -> 'Firefox' 'Opera' 'Safari' 'IE7' 'IE' %]
 
-[%- BLOCK gencontrol -%]
-    [% IF doFavorites %]
-       [% IF album.isFavorite -%]
-          [% WRAPPER favdellink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.favorites_url | replace("'", "%27") | uri %]', '[% album.title | replace("'", "%27") | uri %]');"[% END -%]
-       [% ELSE %]
-          [% WRAPPER favaddlink noTarget=1 %]onclick="SqueezeJS.Utils.toggleFavorite(this, '[% album.favorites_url | replace("'", "%27") | uri %]', '[% album.title | replace("'", "%27") | uri %]');"[% END -%]
-       [% END -%]
-    [% END %]
-    [% WRAPPER playlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.playLink | replace("'", "%27") %]&player=[% player | uri %]', 1, SqueezeJS.string('connecting_for'));"[% END %]
-    [% IF allLinks; WRAPPER insertlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.insertLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
-    [% WRAPPER addlink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.addLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END %]
-    [% IF allLinks; WRAPPER removelink %]onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.removeLink | replace("'", "%27") %]&player=[% player | uri %]', 1);"[% END; END %]
-    [% WRAPPER cmdlink cmdimage='b_mmmix.gif' cmdtitle='MORE' %]href="[% webroot %]clixmlbrowser/clicmd=albuminfo+items&album_id=[% album.id %]&player=[% playerURI %]"[% END %]
-[% END %]
-        
 <ul class="thumbwrap">
 [%- FOREACH album = albums %]
 <li class="thumbwrap" style="width:[% size + 20 + (extraPadding * 2) %]px;">
@@ -60,7 +45,7 @@
                     alt="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
                     src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg">
             </a>
-            <span class="browsedbControls">[% PROCESS gencontrol %]</span>
+            <span class="browsedbControls">[% item = album; PROCESS plugins/JustCovers/gencontrols %]</span>
         </div>
 
 [% IF showTitle || showArtist || showYear || album.coverid == 0 %]

@@ -45,6 +45,7 @@ my $log = Slim::Utils::Log->addLogCategory( {
 my $prefs = preferences('plugin.justcovers');
 my $serverPrefs = preferences('server');
 my $collate = Slim::Utils::OSDetect->getOS()->sqlHelperClass()->collate();
+my $doFavorites = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::Favorites::Plugin');
 
 my $allGenres; # cached genre info (id => genre) for use by albums.html
 
@@ -86,7 +87,7 @@ sub initPlugin {
 sub showGenres {
     my ($client, $params) = @_;
 
-    $allGenres = getGenres(); # refresh cache with genre info used for breadcrum in albums.html.
+    $allGenres = getGenres($client); # refresh cache with genre info used for breadcrum in albums.html.
 
     my @genres = sort {$a->{'name'} cmp $b->{'name'}} values %{$allGenres}; # convert hash into array and sort by name
     push @{$params->{'genres'}}, @genres;
@@ -98,6 +99,7 @@ sub showGenres {
     $params->{'pagetitle'} = $title;
     $params->{'pageicon'} = $Slim::Web::Pages::additionalLinks{icons}{$title};
     $params->{'jcversion'} = $JCVersion;
+    $params->{'doFavorites'} = $doFavorites;
     $params->{'extraPadding'} = defined $prefs->get('extraPadding') ? $prefs->get('extraPadding') : 10;
     $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
 
@@ -141,7 +143,7 @@ sub showAlbums {
         'perPage'      => $itemsPerPage,
     });
 
-    $params->{'doFavorites'} = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::Favorites::Plugin');
+    $params->{'doFavorites'} = $doFavorites;
     $params->{'extraPadding'} = defined $prefs->get('extraPadding') ? $prefs->get('extraPadding') : 10;
     $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
     $params->{'showTitle'} = !defined $prefs->get('showAlbumTitle') || $prefs->get('showAlbumTitle') eq 'on';
@@ -174,6 +176,7 @@ sub showAlbums {
 # over time -> must rely on track meta data then (feels shaky).
 #
 sub getGenres {
+    my $client = shift;
     my $genres;
 
     my $sql = <<EOT;
@@ -193,10 +196,24 @@ EOT
     my $sth = $dbh->prepare_cached($sql);
     $sth->execute;
 
+	my $favorites = Slim::Utils::Favorites->new($client) unless !$doFavorites;
+	
     # fetch row by row to preserve order and do some decoding
     while (my $genre = $sth->fetchrow_hashref()) {
         utf8::decode($genre->{'name'}) if defined $genre->{'name'};
-        $genre->{'coverid'} = 0 if !defined $genre->{'coverid'}; 
+        $genre->{'coverid'} = 0 if !defined $genre->{'coverid'};
+
+        $genre->{'title'} = $genre->{'name'}; # alias for compatibility with gencontrols template
+        $genre->{'playLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:load&p2=genre_id:' . $genre->{'id'};
+        $genre->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=genre_id:' . $genre->{'id'};
+        $genre->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=genre_id:' . $genre->{'id'};
+        $genre->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=genre_id:' . $genre->{'id'};
+        $genre->{'moreLink'} = 'clixmlbrowser/clicmd=genreinfo+items&genre_id=' . $genre->{'id'};
+        if ($doFavorites) {
+            $genre->{'favorites_url'} = 'db:genre.name=' . uri_escape_utf8($genre->{'name'});
+            $genre->{'isFavorite'} = $favorites->hasUrl($genre->{'favorites_url'});
+        }
+         
         $genres->{$genre->{'id'}} = $genre;
     }    
     return \%{$genres};
@@ -250,7 +267,7 @@ EOT
     ;
     $sth->execute;			
 
-	my $favorites = Slim::Utils::Favorites->new($client);
+	my $favorites = Slim::Utils::Favorites->new($client) unless !$doFavorites;
 
     my $albums = ();
     my $count = 0;
@@ -268,8 +285,11 @@ EOT
             $album->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=album_id:' . $album->{'id'};
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
             $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
-            $album->{'favorites_url'} = 'db:album.title=' . uri_escape_utf8($album->{'title'});
-            $album->{'isFavorite'} = $favorites->hasUrl($album->{'favorites_url'});
+            $album->{'moreLink'} = 'clixmlbrowser/clicmd=albuminfo+items&album_id=' . $album->{'id'};
+            if ($doFavorites) {
+                $album->{'favorites_url'} = 'db:album.title=' . uri_escape_utf8($album->{'title'});
+                $album->{'isFavorite'} = $favorites->hasUrl($album->{'favorites_url'});
+            }
 
             push @{$albums}, $album;
         } else {
