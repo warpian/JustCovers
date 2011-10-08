@@ -22,7 +22,7 @@ use warnings;
 package Plugins::JustCovers::Plugin;
 
 use base qw(Slim::Plugin::Base);
-use URI::Escape qw(uri_escape_utf8);
+use URI::Escape qw(uri_escape_utf8);              
 use HTML::Entities qw(encode_entities);
 use Slim::Utils::Strings qw(string);
 use Slim::Utils::Prefs;
