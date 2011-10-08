@@ -34,20 +34,17 @@ use Slim::Utils::PluginManager;
 
 use Plugins::JustCovers::Settings;
 
-my $JCVersion;
-
 my $log = Slim::Utils::Log->addLogCategory( {
 	category     => 'plugin.justcovers',
 	defaultLevel => 'DEBUG',
 	description  => 'PLUGIN_JUSTCOVERS',
 } );
 
+my $JCVersion;
 my $prefs = preferences('plugin.justcovers');
 my $serverPrefs = preferences('server');
 my $collate = Slim::Utils::OSDetect->getOS()->sqlHelperClass()->collate();
-my $doFavorites = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::Favorites::Plugin');
-
-my $allGenres; # cached genre info (id => genre) for use by albums.html
+my $doFavorites;
 
 my $orderByList = {
     ALBUM                => 'album',
@@ -77,9 +74,9 @@ sub initPlugin {
     $client->SUPER::initPlugin(@_);
     
     if (main::WEBUI) {
-        $allGenres = getGenres();
         Plugins::JustCovers::Settings->new;
         $JCVersion = Slim::Utils::PluginManager->allPlugins->{'JustCovers'}->{'version'};
+        $doFavorites = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::Favorites::Plugin');
     }
 }
 
@@ -87,9 +84,7 @@ sub initPlugin {
 sub showGenres {
     my ($client, $params) = @_;
 
-    $allGenres = getGenres($client); # refresh cache with genre info used for breadcrum in albums.html.
-
-    my @genres = sort {$a->{'name'} cmp $b->{'name'}} values %{$allGenres}; # convert hash into array and sort by name
+    my @genres = sort {$a->{'name'} cmp $b->{'name'}} values %{getGenres($client)};
     push @{$params->{'genres'}}, @genres;
 
     # use global thumbnail setting to hitch hike on standard caching mechanism
@@ -115,13 +110,8 @@ sub showGenres {
 # Prepares variables and processes the "albums.html" template.
 sub showAlbums {
     my ($client, $params) = @_;
-    
     my $genreId = $params->{'genre'};
-
-    # assert valid genre id
-    if (!defined $genreId || !defined $allGenres->{$genreId}) { die "Cannot show albums: invalid genre id.\n" };
-
-    my $genreName = $allGenres->{$genreId}->{'name'};
+    my $genreName = $params->{'name'};
     my $title = 'PLUGIN_JUSTCOVERS';
 
     # get paging info from setting and query parameter
@@ -209,7 +199,7 @@ EOT
         $genre->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=genre_id:' . $genre->{'id'};
         $genre->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=genre_id:' . $genre->{'id'};
         $genre->{'moreLink'} = 'clixmlbrowser/clicmd=genreinfo+items&genre_id=' . $genre->{'id'};
-        if ($doFavorites) {
+        if ($doFavorites && $favorites) {
             $genre->{'favorites_url'} = 'db:genre.name=' . uri_escape_utf8($genre->{'name'});
             $genre->{'isFavorite'} = $favorites->hasUrl($genre->{'favorites_url'});
         }
@@ -286,7 +276,7 @@ EOT
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
             $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
             $album->{'moreLink'} = 'clixmlbrowser/clicmd=albuminfo+items&album_id=' . $album->{'id'};
-            if ($doFavorites) {
+            if ($doFavorites && $favorites) {
                 $album->{'favorites_url'} = 'db:album.title=' . uri_escape_utf8($album->{'title'});
                 $album->{'isFavorite'} = $favorites->hasUrl($album->{'favorites_url'});
             }
