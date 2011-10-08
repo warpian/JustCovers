@@ -111,7 +111,7 @@ sub showGenres {
 sub showAlbums {
     my ($client, $params) = @_;
     my $genreId = $params->{'genre'};
-    my $genreName = $params->{'name'};
+    my $genreName = $params->{'name'}; # pumping around the genre name to save on query time/calls
     my $title = 'PLUGIN_JUSTCOVERS';
 
     # get paging info from setting and query parameter
@@ -128,7 +128,7 @@ sub showAlbums {
     # create paging info
     $params->{'pageinfo'} = Slim::Web::Pages::Common->pageInfo({
         'itemCount'    => $totalAlbums,
-        'otherParams'  => "&genre=$genreId&itemsPerPage=$itemsPerPage&player=" . uri_escape_utf8($params->{'player'}),
+        'otherParams'  => "&genre=$genreId&name=" . uri_escape_utf8($genreName) . "&player=" . uri_escape_utf8($params->{'player'}),
         'start'        => $start,
         'perPage'      => $itemsPerPage,
     });
@@ -152,7 +152,7 @@ sub showAlbums {
     };
     push @{$params->{'pwd_list'}}, {
 		'title' => $genreName,
-		'href'  => 'href=albums.html?genre=' . $genreId . '&player=' .  uri_escape_utf8($params->{'player'}),
+		'href'  => 'href=albums.html?genre=' . $genreId . '&name=' . uri_escape_utf8($genreName) . '&player=' .  uri_escape_utf8($params->{'player'}),
     };    
     # feed above params to template
     return Slim::Web::HTTP::filltemplatefile('plugins/JustCovers/albums.html', $params);
@@ -192,8 +192,9 @@ EOT
     while (my $genre = $sth->fetchrow_hashref()) {
         utf8::decode($genre->{'name'}) if defined $genre->{'name'};
         $genre->{'coverid'} = 0 if !defined $genre->{'coverid'};
-
         $genre->{'title'} = $genre->{'name'}; # alias for compatibility with gencontrols template
+
+        # playlist control links
         $genre->{'playLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:load&p2=genre_id:' . $genre->{'id'};
         $genre->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=genre_id:' . $genre->{'id'};
         $genre->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=genre_id:' . $genre->{'id'};
@@ -270,7 +271,7 @@ EOT
             utf8::decode($album->{'artist'}) if defined $album->{'artist'};
             $album->{'coverid'} = 0 if !defined $album->{'coverid'};
 
-            # it is a bit arbitrary to process these URLs here, but it matches the 'xmlbrowser.html' templates 
+            # playlist control links 
             $album->{'playLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:' . $album->{'id'};
             $album->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=album_id:' . $album->{'id'};
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
