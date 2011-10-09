@@ -39,7 +39,11 @@
 
     <div class="thumbwrap">
         <div class="thumbArtwork[% IF browserType == 'Firefox' && showShadows %] shadow[% END -%]" style="width:[% size %]px;height:[% size %]px;">
-            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% album.title | replace("'", "%27") | uri %]&album_id=[% album.id %]&player=[% playerURI %]">
+        [% IF clickAlbumIsPlay %]
+            <a class="browseItemLink" href="javascript:void()" onclick="SqueezeJS.Controller.urlRequest('[% webroot %][% album.playLink %]&player=[% playerURI %]', 1, SqueezeJS.string('connecting_for'));">
+        [% ELSE %]
+            <a class="browseItemLink" href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&mode=tracks&linktitle=[% 'ALBUM' | string %]%20[% album.title | uri | replace("'", "%27") %]&album_id=[% album.id %]&player=[% playerURI %]">
+        [% END %]
                 <img width="[% size %]" height="[% size %]"
                     title="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
                     alt="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
@@ -47,15 +51,14 @@
             </a>
             <span class="browsedbControls">[% item = album; PROCESS plugins/JustCovers/gencontrols.html %]</span>
         </div>
-
 [% IF showAlbumText || album.coverid == 0 %]
-    <div class="artworkText" style="width:[% size %]px;">
-        [%- IF showAlbumText || album.coverid == 0 %][% album.title | html %]<br/>[% END %]
-        [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
-        [%- IF showArtist; album.artist | html; END -%]
-    </div>
+        <div class="artworkText" style="width:[% size %]px;">
+            [%- IF showAlbumText || album.coverid == 0 %][% album.title | html %]<br/>[% END %]
+            [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
+            [%- IF showArtist; album.artist | html; END -%]
+        </div>
 [% ELSE %]
-    <span style="font-size:4px">&nbsp;</span>
+        <span style="font-size:4px">&nbsp;</span>
 [% END %]
     </div>
     

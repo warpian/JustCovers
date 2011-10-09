@@ -139,6 +139,7 @@ sub showAlbums {
     $params->{'showAlbumText'} = $prefs->get('showAlbumText') eq 'on';
     $params->{'showArtist'} = $serverPrefs->get('showArtist');
     $params->{'showYear'} = $serverPrefs->get('showYear');
+    $params->{'clickAlbumIsPlay'} = !defined $prefs->get('clickAlbumAction') || $prefs->get('clickAlbumAction') eq 'play'; 
     $params->{'orderByList'} = \%{$orderByList};
     $params->{'size'} = $serverPrefs->get('thumbSize') || 100;;
     $params->{'pagetitle'} = $title;
@@ -199,7 +200,7 @@ EOT
         $genre->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=genre_id:' . $genre->{'id'};
         $genre->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=genre_id:' . $genre->{'id'};
         $genre->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=genre_id:' . $genre->{'id'};
-        $genre->{'moreLink'} = 'clixmlbrowser/clicmd=genreinfo+items&linktitle=Information%20(' . uri_escape_utf8($genre->{'name'}) . ')&genre_id=' . $genre->{'id'};
+        $genre->{'moreLink'} = 'clixmlbrowser/clicmd=genreinfo+items&linktitle=' . uri_escape_utf8($genre->{'name'}) . '&genre_id=' . $genre->{'id'};
         if ($doFavorites && $favorites) {
             $genre->{'favorites_url'} = 'db:genre.name=' . uri_escape_utf8($genre->{'name'});
             $genre->{'isFavorite'} = $favorites->hasUrl($genre->{'favorites_url'});
@@ -271,19 +272,20 @@ EOT
             utf8::decode($album->{'artist'}) if defined $album->{'artist'};
             $album->{'coverid'} = 0 if !defined $album->{'coverid'};
 
-            # playlist control links 
+            # playlist control links
+
             $album->{'playLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:load&p2=album_id:' . $album->{'id'};
             $album->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=album_id:' . $album->{'id'};
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
             $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
-            $album->{'moreLink'} = 'clixmlbrowser/clicmd=albuminfo+items&linktitle=Information%20(' . uri_escape_utf8($album->{'title'}) . ')&album_id=' . $album->{'id'};
+            $album->{'moreLink'} = 'clixmlbrowser/clicmd=albuminfo+items&linktitle=' . uri_escape_utf8($album->{'title'}) . '&album_id=' . $album->{'id'};
             if ($doFavorites && $favorites) {
                 $album->{'favorites_url'} = 'db:album.title=' . uri_escape_utf8($album->{'title'});
                 $album->{'isFavorite'} = $favorites->hasUrl($album->{'favorites_url'});
             }
 
             push @{$albums}, $album;
-        } else {
+        } else {                                                                
             last if !defined $sth->fetchrow_arrayref();
             # Since fetchrow_arrayref() is faster than fetchrow_hashref()
             # we call it when we are not going to use the data anyway.

@@ -26,7 +26,7 @@
 [%- END %]
 
 <div id="ArtistYearSettings" class="jcGeneralSettings"[% IF prefs.pref_showAlbumText != 'on' %] style="display:none;"[% END %]>
-<span class="prefDesc">[% "SETUP_NOTE_GENERAL_SETTINGS" | string %]</span>
+<span class="prefDesc">[% 'SETUP_NOTE_GENERAL_SETTINGS' | getstring %]</span>
 [% WRAPPER settingSection %]
     [% WRAPPER settingGroup title="SETUP_SHOWARTIST" desc="SETUP_SHOWARTIST_DESC" %]
         <select class="stdedit" name="pref_showArtist" id="showArtist">
@@ -45,15 +45,22 @@
 </div>
 
 [% WRAPPER setting title="SETUP_SHOW_SHADOWS" desc="SETUP_SHOW_SHADOWS_DESC" -%]
-    <input type="checkbox" name="pref_showShadows" [% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
+    <input type="checkbox" name="pref_showShadows"[% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
 [%- END %]
 
+[% WRAPPER setting title="SETUP_CLICK_ALBUM" desc="SETUP_CLICK_ALBUM_DESC" %]
+    <select class="stdedit" name="pref_clickAlbumAction">
+        <option [% IF prefs.pref_clickAlbumAction == 'play' %]selected [% END %]value="play">[% 'CLICK_ACTION_PLAY' | getstring %]</option>
+        <option [% IF prefs.pref_clickAlbumAction == 'more' %]selected [% END %]value="more">[% 'CLICK_ACTION_MORE' | getstring %]</option>
+    </select>
+[% END %]
+
 [% WRAPPER setting title="SETUP_EXTRA_PADDING" desc="SETUP_EXTRA_PADDING_DESC" -%]
-    <input type="text" size="15" id="extraPadding" name="pref_extraPadding" class="stdedit sliderInput_0_50 canValidate valid" value="[% prefs.pref_extraPadding || 10 %]" style="visibility: visible;">
+    <input type="text" size="15" name="pref_extraPadding" class="stdedit sliderInput_0_50 canValidate valid" value="[% prefs.pref_extraPadding || 10 %]" style="visibility: visible;">
 [%- END %]
 
 <div class="jcGeneralSettings">
-<span class="prefDesc">[% "SETUP_NOTE_GENERAL_SETTINGS" | string %]</span>
+<span class="prefDesc">[% 'SETUP_NOTE_GENERAL_SETTINGS' | getstring %]</span>
 [% WRAPPER setting title="SETUP_THUMBSIZE" desc="SETUP_THUMBSIZE_DESC" %]
     <input type="text" class="stdedit sliderInput_25_250" name="pref_thumbSize" id="thumbSize" value="[% Prefs.preferences('server').get('thumbSize') %]" size="15">
 [% END %]

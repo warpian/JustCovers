@@ -21,7 +21,7 @@ sub page {
 }
 
 sub prefs {
-	return ($prefs, qw(showAlbumText showShadows extraPadding));
+	return ($prefs, qw(showAlbumText showShadows extraPadding clickAlbumAction));
 }
 
 sub handler {

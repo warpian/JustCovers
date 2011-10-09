@@ -24,3 +24,15 @@ SETUP_EXTRA_PADDING_DESC
 
 SETUP_NOTE_GENERAL_SETTINGS
 	EN	Note: these are general settings also available from the "Interface" tab.
+
+SETUP_CLICK_ALBUM
+	EN	When clicking an Album
+
+SETUP_CLICK_ALBUM_DESC
+	EN	Set the action associated with clicking album art.
+
+CLICK_ACTION_MORE
+	EN	Display Tracks
+
+CLICK_ACTION_PLAY
+	EN	Play Album
