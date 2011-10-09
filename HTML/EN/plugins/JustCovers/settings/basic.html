@@ -50,7 +50,7 @@
 
 [% WRAPPER setting title="SETUP_CLICK_ALBUM" desc="SETUP_CLICK_ALBUM_DESC" %]
     <select class="stdedit" name="pref_clickAlbumAction">
-        <option [% IF prefs.pref_clickAlbumAction == 'play' %]selected [% END %]value="play">[% 'CLICK_ACTION_PLAY' | getstring %]</option>
+        <option [% IF NOT prefs.exists('pref_clickAlbumAction') || prefs.pref_clickAlbumAction == 'play' %]selected [% END %]value="play">[% 'CLICK_ACTION_PLAY' | getstring %]</option>
         <option [% IF prefs.pref_clickAlbumAction == 'more' %]selected [% END %]value="more">[% 'CLICK_ACTION_MORE' | getstring %]</option>
     </select>
 [% END %]

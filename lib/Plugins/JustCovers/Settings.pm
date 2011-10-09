@@ -7,6 +7,7 @@ use base qw(Slim::Web::Settings);
 
 use Slim::Utils::Prefs;
 use Slim::Utils::Log;
+use Slim::Utils::PluginManager;
 
 my $prefs = preferences('plugin.justcovers');
 my $serverPrefs = preferences('server');
@@ -44,8 +45,10 @@ sub handler {
         $params->{'showAlbumText'} = 'on';
         $params->{'showShadows'} = 'off';
         $params->{'extraPadding'} = 10;
+        $params->{'clickAlbumAction'} = 'play';
     }
 
+    $params->{'jcversion'} = Slim::Utils::PluginManager->allPlugins->{'JustCovers'}->{'version'};
     return $class->SUPER::handler($client, $params);
 }
 
