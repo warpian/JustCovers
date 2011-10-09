@@ -4,6 +4,7 @@ function createOrderByControl() {
     menu.add('<span class="menu-title">' + SqueezeJS.string('sort_by') + '...</span>');
 
     var selectedValue = SqueezeJS.getCookie('Squeezebox-orderBy');
+    if (!selectedValue) selectedValue = 'artistalbum';
     var selectedLabel;
     for (order in orderByList) {
         var isSelected = (orderByList[order] == selectedValue);

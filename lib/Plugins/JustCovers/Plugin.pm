@@ -118,7 +118,9 @@ sub showAlbums {
     my $itemsPerPage = max($params->{'itemsPerPage'} || $serverPrefs->get('itemsPerPage') || 100, 1);
     my $start = max($params->{'start'} || 0, 0);
 
-    my $result = getAlbumsByGenre($client, $genreId, $itemsPerPage, $start, $params->{'orderBy'});
+    my $orderByCookie = defined $params->{'orderBy'} ? $params->{'orderBy'} : 'artistalbum';
+
+    my $result = getAlbumsByGenre($client, $genreId, $itemsPerPage, $start, $orderBySQL->{$orderByCookie});
     my $totalAlbums = $result->{'total'};
 
     if ($start < $totalAlbums) {
@@ -221,8 +223,7 @@ sub getAlbumsByGenre {
     my $genreId = shift;    
     my $itemsPerPage = shift;
     my $start = shift;
-    my $orderByCookie = shift;
-    my $orderBy = $orderBySQL->{$orderByCookie} || $orderBySQL->{'artistalbum'};
+    my $orderBy = shift;
 
 # Note on not using LIMIT:
 # Unfortunately SQLite has no SQL_CALC_FOUND_ROWS like MySQL does.
