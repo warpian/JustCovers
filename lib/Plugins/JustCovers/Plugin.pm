@@ -199,7 +199,7 @@ EOT
         $genre->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=genre_id:' . $genre->{'id'};
         $genre->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=genre_id:' . $genre->{'id'};
         $genre->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=genre_id:' . $genre->{'id'};
-        $genre->{'moreLink'} = 'clixmlbrowser/clicmd=genreinfo+items&genre_id=' . $genre->{'id'};
+        $genre->{'moreLink'} = 'clixmlbrowser/clicmd=genreinfo+items&linktitle=Information%20(' . uri_escape_utf8($genre->{'name'}) . ')&genre_id=' . $genre->{'id'};
         if ($doFavorites && $favorites) {
             $genre->{'favorites_url'} = 'db:genre.name=' . uri_escape_utf8($genre->{'name'});
             $genre->{'isFavorite'} = $favorites->hasUrl($genre->{'favorites_url'});
@@ -276,7 +276,7 @@ EOT
             $album->{'insertLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:insert&p2=album_id:' . $album->{'id'};
             $album->{'addLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:add&p2=album_id:' . $album->{'id'};
             $album->{'removeLink'} = 'anyurl?p0=playlistcontrol&p1=cmd:delete&p2=album_id:' . $album->{'id'};
-            $album->{'moreLink'} = 'clixmlbrowser/clicmd=albuminfo+items&album_id=' . $album->{'id'};
+            $album->{'moreLink'} = 'clixmlbrowser/clicmd=albuminfo+items&linktitle=Information%20(' . uri_escape_utf8($album->{'title'}) . ')&album_id=' . $album->{'id'};
             if ($doFavorites && $favorites) {
                 $album->{'favorites_url'} = 'db:album.title=' . uri_escape_utf8($album->{'title'});
                 $album->{'isFavorite'} = $favorites->hasUrl($album->{'favorites_url'});
