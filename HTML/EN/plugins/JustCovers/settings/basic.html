@@ -1,8 +1,48 @@
-[% PROCESS settings/header.html %]
+[% pageHeaderScripts = BLOCK %]
+<link type="text/css" rel=stylesheet href="[% webroot %]plugins/JustCovers/html/css/justcovers.css?v=[% jcversion %]" />
+<script TYPE="text/javascript">[% PROCESS html/vars.js %]</script>           
+<script type="text/javascript" src="[% webroot %]html/prototype.js?r=[% revision %]" ></script>
+<script type="text/javascript">
+<!--
+    function toggleArtistYear(event) {
+        if (Event.element(event).checked)
+            $('ArtistYearSettings').show();
+        else
+            $('ArtistYearSettings').hide();
+    }
 
-[% WRAPPER setting title="SETUP_SHOW_ALBUM_TITLE" desc="SETUP_SHOW_ALBUM_TITLE_DESC" -%]
-    <input type="checkbox" name="pref_showAlbumTitle" [% IF !prefs.pref_showAlbumTitle || prefs.pref_showAlbumTitle == 'on' %]checked="checked" [% END %]>
+    Event.observe(window, 'load', function() {
+        Event.observe('showAlbumText', 'change', toggleArtistYear);
+    });
+// -->
+</script>
+[% END %]
+        
+[% PROCESS settings/header.html %]
+[% USE Prefs %]
+
+[% WRAPPER setting title="SETUP_SHOW_ALBUM_TEXT" desc="SETUP_SHOW_ALBUM_TEXT_DESC" -%]
+    <input type="checkbox" id="showAlbumText" name="pref_showAlbumText" [% IF prefs.pref_showAlbumText == 'on' %]checked="checked" [% END %]>
 [%- END %]
+
+<div id="ArtistYearSettings" class="jcGeneralSettings"[% IF prefs.pref_showAlbumText != 'on' %] style="display:none;"[% END %]>
+<span class="prefDesc">[% "SETUP_NOTE_GENERAL_SETTINGS" | string %]</span>
+[% WRAPPER settingSection %]
+    [% WRAPPER settingGroup title="SETUP_SHOWARTIST" desc="SETUP_SHOWARTIST_DESC" %]
+        <select class="stdedit" name="pref_showArtist" id="showArtist">
+            <option [% IF NOT Prefs.preferences('server').get('showArtist') %]selected [% END %]value="0">[% 'DISABLED' | getstring %]</option>
+            <option [% IF Prefs.preferences('server').get('showArtist') %]selected [% END %]value="1">[% 'ENABLED' | getstring %]</option>
+        </select>
+    [% END %]
+
+    [% WRAPPER settingGroup title="SETUP_SHOWYEAR" desc="SETUP_SHOWYEAR_DESC" %]
+        <select class="stdedit" name="pref_showYear" id="showYear">
+            <option [% IF NOT Prefs.preferences('server').get('showYear') %]selected [% END %]value="0">[% 'DISABLED' | getstring %]</option>
+            <option [% IF Prefs.preferences('server').get('showYear') %]selected [% END %]value="1">[% 'ENABLED' | getstring %]</option>
+        </select>
+    [% END %]
+[% END %]
+</div>
 
 [% WRAPPER setting title="SETUP_SHOW_SHADOWS" desc="SETUP_SHOW_SHADOWS_DESC" -%]
     <input type="checkbox" name="pref_showShadows" [% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
@@ -11,5 +51,22 @@
 [% WRAPPER setting title="SETUP_EXTRA_PADDING" desc="SETUP_EXTRA_PADDING_DESC" -%]
     <input type="text" size="15" id="extraPadding" name="pref_extraPadding" class="stdedit sliderInput_0_50 canValidate valid" value="[% prefs.pref_extraPadding || 10 %]" style="visibility: visible;">
 [%- END %]
-        
+
+<div class="jcGeneralSettings">
+<span class="prefDesc">[% "SETUP_NOTE_GENERAL_SETTINGS" | string %]</span>
+[% WRAPPER setting title="SETUP_THUMBSIZE" desc="SETUP_THUMBSIZE_DESC" %]
+    <input type="text" class="stdedit sliderInput_25_250" name="pref_thumbSize" id="thumbSize" value="[% Prefs.preferences('server').get('thumbSize') %]" size="15">
+[% END %]
+
+[% WRAPPER setting title="SETUP_ITEMSPERPAGE" desc="SETUP_ITEMSPERPAGE_DESC" %]
+    <input type="text" class="stdedit sliderInput_10_500" name="pref_itemsPerPage" id="itemsPerPage" value="[% Prefs.preferences('server').get('itemsPerPage') %]" size="15">
+[% END %]
+
+[% IF useExtJS %]
+    [% WRAPPER setting title="SETUP_ADDITIONAL_PLAYLIST_BUTTONS" desc="SETUP_ADDITIONAL_PLAYLIST_BUTTONS_DESC"%]
+    <input type=checkbox [% IF cookies.${'Squeezebox-allLinks'}.value %]checked [% END %] class="stdedit" id="additionalPlaylistButtons" value="1" onChange="SqueezeJS.setCookie( 'Squeezebox-allLinks', this.checked ? '1' : '')" />
+    [% END %]
+[% END %]    
+</div>
+
 [% PROCESS settings/footer.html %]

@@ -48,14 +48,14 @@
             <span class="browsedbControls">[% item = album; PROCESS plugins/JustCovers/gencontrols %]</span>
         </div>
 
-[% IF showTitle || showArtist || showYear || album.coverid == 0 %]
-        <div class="artworkText" style="width:[% size %]px;">
-            [%- IF showTitle || album.coverid == 0 %][% album.title | html %]<br/>[% END %]
-            [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
-            [%- IF showArtist; album.artist | html; END -%]
-        </div>
+[% IF showAlbumText || album.coverid == 0 %]
+    <div class="artworkText" style="width:[% size %]px;">
+        [%- IF showAlbumText || album.coverid == 0 %][% album.title | html %]<br/>[% END %]
+        [%- IF showYear && album.year %][% album.year %]<br/>[% END %]
+        [%- IF showArtist; album.artist | html; END -%]
+    </div>
 [% ELSE %]
-        <span style="font-size:4px">&nbsp;</span>
+    <span style="font-size:4px">&nbsp;</span>
 [% END %]
     </div>
     

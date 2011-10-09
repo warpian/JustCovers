@@ -4,11 +4,11 @@ PLUGIN_JUSTCOVERS
 PLUGIN_JUSTCOVERS_DESC
 	EN	Browse by genres and albums with covers only.
 
-SETUP_SHOW_ALBUM_TITLE
-	EN	Show Title with Albums
+SETUP_SHOW_ALBUM_TEXT
+	EN	Show text with Albums
 
-SETUP_SHOW_ALBUM_TITLE_DESC
-	EN	You may choose to show the album title when browsing with Just Covers. When enabled, the album title will be shown below the album art.
+SETUP_SHOW_ALBUM_TEXT_DESC
+	EN	You may choose to show the album title, artist and year when browsing with Just Covers.<br/><br/>When enabled, the album title will be shown below the album art.
 
 SETUP_SHOW_SHADOWS
 	EN	Show Shadows with Albums
@@ -20,4 +20,7 @@ SETUP_EXTRA_PADDING
 	EN	Space between Albums
 
 SETUP_EXTRA_PADDING_DESC
-	EN  Put some extra padding (measured in pixels) between the album art.			
+	EN	Put some extra padding (measured in pixels) in between albums.			
+
+SETUP_NOTE_GENERAL_SETTINGS
+	EN	Note: these are general settings also available from the "Interface" tab.
