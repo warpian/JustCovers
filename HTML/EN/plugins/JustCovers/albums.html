@@ -45,7 +45,7 @@
                     alt="&quot;[% album.title %]&quot;[% IF album.year %] ([% album.year %])[% END %] by [% album.artist %]"
                     src="[% webroot %]music/[% album.coverid %]/cover_[% size %]x[% size %]_o.jpg">
             </a>
-            <span class="browsedbControls">[% item = album; PROCESS plugins/JustCovers/gencontrols %]</span>
+            <span class="browsedbControls">[% item = album; PROCESS plugins/JustCovers/gencontrols.html %]</span>
         </div>
 
 [% IF showAlbumText || album.coverid == 0 %]
