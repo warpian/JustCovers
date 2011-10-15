@@ -31,18 +31,6 @@
     box-shadow:3px 3px 3px 2px #797979; 
 }
 
-.ie-shadow {
-    display: block;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 102px; /* match target width */
-    height: 102px; /* match target height */
-    z-index: 1;
-    background: #000;
-    filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='15', MakeShadow='true', ShadowOpacity='0.40');
-}
-
 .jcGeneralSettings {
     width:80%;
     padding:8px;
