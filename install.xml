@@ -4,7 +4,7 @@
   <creator>Tom Kalmijn</creator>
   <defaultState>enabled</defaultState>
   <description>PLUGIN_JUSTCOVERS_DESC</description>
-  <email>tkalmijn@yahoo.com</email>
+  <email>tkalmijn@gmail.com</email>
   <homepageURL>http://www.warpgear.nl/sb/justcovers</homepageURL>
   <icon>plugins/JustCovers/html/images/justcovers.png</icon>
   <id>89EFF566-EAD5-11E0-9570-C21DB9885BB3</id>
@@ -16,5 +16,5 @@
     <minVersion>7.6.0</minVersion>
   </targetApplication>
   <type>2</type>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
 </extension>
