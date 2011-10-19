@@ -14,7 +14,7 @@ SETUP_SHOW_SHADOWS
 	EN	Show Shadows with Albums
 
 SETUP_SHOW_SHADOWS_DESC
-	EN	Show Shadows with Albums. This feature has only been tested with Firefox 3.6.
+	EN	Show Shadows with Albums. supported in IE9+, Firefox 4, Chrome, Safari and Opera.
 
 SETUP_EXTRA_PADDING
 	EN	Space between Albums

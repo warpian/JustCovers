@@ -96,7 +96,7 @@ sub showGenres {
     $params->{'jcversion'} = $JCVersion;
     $params->{'doFavorites'} = $doFavorites;
     $params->{'extraPadding'} = defined $prefs->get('extraPadding') ? $prefs->get('extraPadding') : 10;
-    $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
+    $params->{'showShadows'} = !defined $prefs->get('showShadows') || $prefs->get('showShadows') eq 'on';
 
     # init bread crum navigation (actually a fixed hierarchical navigation)
     push @{$params->{'pwd_list'}}, {
