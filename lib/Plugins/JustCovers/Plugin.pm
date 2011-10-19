@@ -36,7 +36,7 @@ use Plugins::JustCovers::Settings;
 
 my $log = Slim::Utils::Log->addLogCategory( {
 	category     => 'plugin.justcovers',
-	defaultLevel => 'DEBUG',
+	defaultLevel => 'ERROR',
 	description  => 'PLUGIN_JUSTCOVERS',
 } );
 
@@ -138,7 +138,7 @@ sub showAlbums {
     $params->{'doFavorites'} = $doFavorites;
     $params->{'extraPadding'} = defined $prefs->get('extraPadding') ? $prefs->get('extraPadding') : 10;
     $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
-    $params->{'showAlbumText'} = $prefs->get('showAlbumText') eq 'on';
+    $params->{'showAlbumText'} = defined $prefs->get('showAlbumText') && $prefs->get('showAlbumText') eq 'on';
     $params->{'showArtist'} = $serverPrefs->get('showArtist');
     $params->{'showYear'} = $serverPrefs->get('showYear');
     $params->{'clickAlbumIsPlay'} = !defined $prefs->get('clickAlbumAction') || $prefs->get('clickAlbumAction') eq 'play'; 
