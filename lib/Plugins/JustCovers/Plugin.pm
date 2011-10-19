@@ -137,7 +137,7 @@ sub showAlbums {
 
     $params->{'doFavorites'} = $doFavorites;
     $params->{'extraPadding'} = defined $prefs->get('extraPadding') ? $prefs->get('extraPadding') : 10;
-    $params->{'showShadows'} = defined $prefs->get('showShadows') && $prefs->get('showShadows') eq 'on';
+    $params->{'showShadows'} = !defined $prefs->get('showShadows') || $prefs->get('showShadows') eq 'on';
     $params->{'showAlbumText'} = defined $prefs->get('showAlbumText') && $prefs->get('showAlbumText') eq 'on';
     $params->{'showArtist'} = $serverPrefs->get('showArtist');
     $params->{'showYear'} = $serverPrefs->get('showYear');

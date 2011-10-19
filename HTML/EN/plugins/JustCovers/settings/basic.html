@@ -45,7 +45,7 @@
 </div>
 
 [% WRAPPER setting title="SETUP_SHOW_SHADOWS" desc="SETUP_SHOW_SHADOWS_DESC" -%]
-    <input type="checkbox" name="pref_showShadows"[% IF prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
+    <input type="checkbox" name="pref_showShadows"[% IF NOT prefs.exists('pref_showShadows') || prefs.pref_showShadows == 'on' %]checked="checked" [% END %]>
 [%- END %]
 
 [% WRAPPER setting title="SETUP_CLICK_ALBUM" desc="SETUP_CLICK_ALBUM_DESC" %]

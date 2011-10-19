@@ -28,7 +28,9 @@
 
 .shadow {
     background-color: #EEEEEE;
-    box-shadow:3px 3px 3px 2px #797979; 
+    box-shadow:3px 3px 3px 2px #797979;
+    -moz-box-shadow: 3px 3px 3px #797979;
+    -webkit-box-shadow: 3px 3px 3px #797979;
 }
 
 .jcGeneralSettings {
