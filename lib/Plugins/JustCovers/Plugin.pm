@@ -1,6 +1,6 @@
 # 				Just Covers Squeezebox Server Plugin
 #
-#    Copyright (c) 2011 Tom Kalmijn (tkalmijn@yahoo.com)
+#    Copyright (c) 2011 Tom Kalmijn (tkalmijn@gmail.com)
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
